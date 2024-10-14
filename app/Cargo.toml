@@ -9,6 +9,8 @@ edition = "2021"
 foundry-contracts.workspace = true
 eyre = "0.6"
 tokio = { version = "1.19", features = ["macros", "rt-multi-thread"] }
+# alloy = { version = "0.4.1", features = ["full", "node-bindings"] }
+
 alloy = { git = "https://github.com/alloy-rs/alloy", features = [
     "providers",
     "node-bindings",

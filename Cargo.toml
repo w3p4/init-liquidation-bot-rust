@@ -1,5 +1,6 @@
 [workspace]
 members = ["app", "crates/bindings"]
+resolver = "2"
 
 [workspace.dependencies]
 foundry-contracts = { path = "crates/bindings" }

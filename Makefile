@@ -8,6 +8,7 @@ CARGO=cargo
 CRATES_FOLDER=crates
 CONTRACTS_PATH=./contracts
 BINDINGS_FOLDER=bindings
+CRATE_NAME=foundry-contracts
 BINDINGS_CRATES_FOLDER=$(CRATES_FOLDER)/$(BINDINGS_FOLDER)
 BINDINGS_OUT_PATH=$(CONTRACTS_PATH)/out/$(BINDINGS_FOLDER)
 
@@ -17,7 +18,7 @@ bindings:
 	rm -rf $(BINDINGS_OUT_PATH)
 
 # Generate new bindings
-	@forge bind --root $(CONTRACTS_PATH) --crate-name $(BINDINGS_FOLDER)
+	@forge bind --alloy --root $(CONTRACTS_PATH) --crate-name $(CRATE_NAME)
 
 # Move bindings to the correct location
 	@mv -f $(BINDINGS_OUT_PATH) $(CRATES_FOLDER)
