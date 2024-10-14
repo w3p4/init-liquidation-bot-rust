@@ -1,6 +1,6 @@
 use alloy::{
-    primitives::{uint, Address},
-    providers::{builder, Provider},
+    primitives::{uint, utils::format_units, Address},
+    providers::ProviderBuilder,
     transports::http::{Client, Http},
 };
 // use alloy_primitives::ruint::UintTryFrom;
@@ -11,23 +11,27 @@ use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
 async fn main() -> Result<()> {
     const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
 
-    let provider = builder().with_recommended_fillers().on_anvil_with_wallet();
-
-    // let address = Address::parse_checksummed(checksummed, None).expect("valid checksum");
-    // struct Test {
-    //     c: &'a IInitLens::IInitLensInstance<Http<Client>, _>,
-    // }
+    // Spin up a forked Anvil node.
+    // Ensure `anvil` is available in $PATH.
+    let rpc_url = "https://rpc.mantle.xyz";
+    let provider =
+        ProviderBuilder::new().on_anvil_with_wallet_and_config(|anvil| anvil.fork(rpc_url));
 
     let init_lens: IInitLensInstance<Http<Client>, _> =
         IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider.clone());
-    // let test = Test { c: &init_lens };
 
-    let address = init_lens.address();
+    let pos_id =
+        uint!(13896239034349855609814759822748684436256448872554724177418048799807749705170_U256);
 
-    let builder = init_lens.getInitPosInfo(uint!(1234_U256));
-    // let data = builder.call().await?;
+    let builder = init_lens.getInitPosInfo(pos_id);
 
-    // println!("hello {}", address);
+    let data = builder.call().await?;
+    let info = data.posInfo;
+    let health = info.health_e18;
+
+    let health_string: String = format_units(health, 18)?;
+
+    println!("health: {health_string}");
     // let blk = provider.get_block_number().await?;
     Ok(())
 }
