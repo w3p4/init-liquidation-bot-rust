@@ -1,5 +1,5 @@
 use alloy::{
-    primitives::{uint, utils::format_units, Address},
+    primitives::{utils::format_units, Address},
     providers::ProviderBuilder,
     transports::http::{Client, Http},
 };
@@ -8,18 +8,16 @@ use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
 
 mod positions;
 
+// constants
+const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
+const _INIT_CORE: &str = "0x972BcB0284cca0152527c4f70f8F689852bCAFc5";
+const _POS_MANAGER: &str = "0x0e7401707CD08c03CDb53DAEF3295DDFb68BBa92";
+const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // constants
-    const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
-    const _INIT_CORE: &str = "0x972BcB0284cca0152527c4f70f8F689852bCAFc5";
-    const _POS_MANAGER: &str = "0x0e7401707CD08c03CDb53DAEF3295DDFb68BBa92";
-    const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
-
     // get active positions
     let pos = positions::get_active_positions().await?;
-
-    println!("{:#?}", pos[0].viewer);
 
     // Spin up a forked Anvil node.
     // Ensure `anvil` is available in $PATH.

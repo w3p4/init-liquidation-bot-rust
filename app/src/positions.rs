@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Number;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 
 use alloy::primitives::{Address, U256};
 
@@ -16,7 +16,7 @@ pub struct RawData {
 
 #[derive(Serialize, Deserialize)]
 struct RawPositions {
-    data: BTreeMap<String, RawData>,
+    data: HashMap<String, RawData>,
     status_code: Number,
 }
 
@@ -25,8 +25,6 @@ pub struct Position {
     pub pos_id: U256,
     pub borrow_pool_tokens: Vec<Address>,
     pub collateral_pool_tokens: Vec<Address>,
-    pub owner: Address,
-    pub viewer: Address,
 }
 
 pub async fn get_active_positions() -> Result<Vec<Position>, Box<dyn std::error::Error>> {
@@ -47,8 +45,6 @@ pub async fn get_active_positions() -> Result<Vec<Position>, Box<dyn std::error:
                 .keys()
                 .map(|x| x.parse::<Address>().unwrap())
                 .collect::<Vec<Address>>(),
-            owner: value.owner.parse::<Address>()?,
-            viewer: value.viewer.parse::<Address>()?,
         });
     }
 
