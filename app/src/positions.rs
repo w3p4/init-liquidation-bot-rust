@@ -2,9 +2,18 @@ use serde::{Deserialize, Serialize};
 use serde_json::Number;
 use std::collections::HashMap;
 
+use alloy::{
+    primitives::{utils::format_units, Address},
+    providers::{Provider, ProviderBuilder},
+    transports::http::{Client, Http},
+};
+
 use alloy::primitives::{Address, U256};
 
+use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
+
 const BACKEND_API: &str = "https://index.init.capital/positions/positions";
+const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
 
 #[derive(Serialize, Deserialize)]
 pub struct RawData {
@@ -58,3 +67,22 @@ pub async fn get_active_positions() -> Result<Vec<Position>, Box<dyn std::error:
 
     Ok(filtered_positions)
 }
+
+// async fn get_init_pos_info(
+//     provider: &ProviderBuilder>,
+// ) -> Result<String, Box<dyn std::error::Error>> {
+//     // init lens instance
+//     let init_lens: IInitLensInstance<Http<Client>, _> =
+//         IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
+
+//     let builder = init_lens.getInitPosInfo(pos[0].pos_id);
+
+//     // call
+//     let data = builder.call().await?;
+
+//     // destruct return data
+//     let info = data.posInfo;
+//     let health = info.health_e18;
+//     let health_string: String = format_units(health, 18)?;
+//     Ok(health_string)
+// }
