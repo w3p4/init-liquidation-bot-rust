@@ -1,9 +1,12 @@
 use serde::Deserialize;
 use std::collections::HashMap;
 
-use alloy::primitives::{Address, U256};
+use alloy::{
+    contract::private::{Network, Provider, Transport},
+    primitives::{utils::format_units, Address, U256},
+};
 
-use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
+use foundry_contracts::iinitlens::IInitLens;
 
 const BACKEND_API: &str = "https://index.init.capital/positions/positions";
 const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
@@ -60,21 +63,25 @@ pub async fn get_active_position_ids() -> Result<Vec<U256>, Box<dyn std::error::
     Ok(filtered_position_ids)
 }
 
-// async fn get_init_pos_info(
-//     provider: &ProviderBuilder>,
-// ) -> Result<String, Box<dyn std::error::Error>> {
-//     // init lens instance
-//     let init_lens: IInitLensInstance<Http<Client>, _> =
-//         IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
+pub async fn get_init_pos_info<
+    T: Transport + ::core::clone::Clone,
+    P: Provider<T, N>,
+    N: Network,
+>(
+    provider: &P,
+    pos_id: U256,
+) -> Result<IInitLens::PosInfo, Box<dyn std::error::Error>> {
+    // init lens instance
+    let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
 
-//     let builder = init_lens.getInitPosInfo(pos[0].pos_id);
+    let builder = init_lens.getInitPosInfo(pos_id);
 
-//     // call
-//     let data = builder.call().await?;
+    // call
+    let data = builder.call().await?;
 
-//     // destruct return data
-//     let info = data.posInfo;
-//     let health = info.health_e18;
-//     let health_string: String = format_units(health, 18)?;
-//     Ok(health_string)
-// }
+    // destruct return data
+    let info = data.posInfo;
+    // let health = info.health_e18;
+    // let health_string: String = format_units(health, 18)?;
+    Ok(info)
+}

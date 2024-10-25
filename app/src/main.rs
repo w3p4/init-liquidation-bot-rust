@@ -5,6 +5,7 @@ use alloy::{
 };
 use eyre::Result;
 use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
+use positions::get_init_pos_info;
 
 mod positions;
 
@@ -25,22 +26,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let provider =
         ProviderBuilder::new().on_anvil_with_wallet_and_config(|anvil| anvil.fork(rpc_url));
 
-    // init lens instance
-    let init_lens: IInitLensInstance<Http<Client>, _> =
-        IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider.clone());
-
-    // example pos id
-    // let pos_id = uint!(pos[0].pos_id);
-
-    // create builder
-    let builder = init_lens.getInitPosInfo(pos[0]);
-
-    // call
-    let data = builder.call().await?;
-
-    // destruct return data
-    let info = data.posInfo;
-    let health = info.health_e18;
+    let pos_info = get_init_pos_info(&provider, pos[0]).await?;
+    let health = pos_info.health_e18;
     let health_string: String = format_units(health, 18)?;
 
     // print Info
