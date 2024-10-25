@@ -17,7 +17,7 @@ const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // get active positions
-    let pos = positions::get_active_positions().await?;
+    let pos = positions::get_active_position_ids().await?;
 
     // Spin up a forked Anvil node.
     // Ensure `anvil` is available in $PATH.
@@ -33,7 +33,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let pos_id = uint!(pos[0].pos_id);
 
     // create builder
-    let builder = init_lens.getInitPosInfo(pos[0].pos_id);
+    let builder = init_lens.getInitPosInfo(pos[0]);
 
     // call
     let data = builder.call().await?;
