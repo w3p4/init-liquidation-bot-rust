@@ -1,6 +1,10 @@
-use futures::future::join_all;
-use futures::join;
+use std::sync::Arc;
+use futures::TryFutureExt;
+// use tokio::sync
+// use futures::future::join_all;
+// use futures::join;
 use serde::Deserialize;
+use tokio::sync::Semaphore;
 use std::collections::HashMap;
 
 use alloy::{
@@ -88,27 +92,131 @@ pub async fn get_init_pos_infos<
 
 pub async fn get_int_pos_infos_chunk<
     T: Transport + ::core::clone::Clone,
-    P: Provider<T, N>,
+    P: Provider<T, N> + 'static  + ::core::clone::Clone,
     N: Network,
 >(
-    provider: &P,
+    provider: P,
     pos_ids: Vec<U256>,
     chunks: usize,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
+    let semaphore = Arc::new(Semaphore::new(10));
     let chunks = pos_ids.chunks(chunks);
 
     let mut handles = Vec::new();
 
     for chunk in chunks {
+        let semaphore = semaphore.clone();
+        let provider = provider.clone();
         let chunk_vec = chunk.to_vec();
-        handles.push(get_init_pos_infos(provider, chunk_vec));
+        let jh = tokio::spawn(async move{
+            let _permit = semaphore.acquire().await.unwrap();
+            let response = get_init_pos_infos(&provider, chunk_vec).await.unwrap();
+            drop(_permit);
+            response
+        });
+        handles.push(jh);
     }
 
-    let result = join_all(handles);
-    println!("Sequential Results: {:#?}", result);
-    // .into_iter()
-    // .flat_map(Result::unwrap)
-    // .collect::<Vec<IInitLens::PosInfo>>();
-
-    Ok(result)
+    let mut responses = Vec::new();
+    for handle in handles{
+        let response = handle.await.unwrap();
+        responses.push(response);
+    }
+   let flattened_responses = responses.into_iter().flatten().collect::<Vec<IInitLens::PosInfo>>();
+    Ok(flattened_responses)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

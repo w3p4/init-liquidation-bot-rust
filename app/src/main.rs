@@ -24,7 +24,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let provider =
         ProviderBuilder::new().on_anvil_with_wallet_and_config(|anvil| anvil.fork(rpc_url));
 
-    let pos_info = positions::get_int_pos_infos_chunk(&provider, pos, 150).await?;
+    // let pos = pos[0..200].to_vec();
+    // println!("Pos: {:?}", pos);
+    let pos_info = positions::get_int_pos_infos_chunk(provider, pos, 150).await?;
     let health = pos_info[0].health_e18;
     let health_string: String = format_units(health, 18)?;
 
@@ -32,3 +34,43 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("health: {health_string}");
     Ok(())
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
