@@ -4,8 +4,6 @@ use alloy::{
     transports::http::{Client, Http},
 };
 use eyre::Result;
-use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
-use positions::get_init_pos_info;
 
 mod positions;
 
@@ -26,8 +24,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let provider =
         ProviderBuilder::new().on_anvil_with_wallet_and_config(|anvil| anvil.fork(rpc_url));
 
-    let pos_info = get_init_pos_info(&provider, pos[0]).await?;
-    let health = pos_info.health_e18;
+    let pos_info = positions::get_int_pos_infos_chunk(&provider, pos, 150).await?;
+    let health = pos_info[0].health_e18;
     let health_string: String = format_units(health, 18)?;
 
     // print Info

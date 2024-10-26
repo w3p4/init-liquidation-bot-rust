@@ -1,3 +1,5 @@
+use futures::future::join_all;
+use futures::join;
 use serde::Deserialize;
 use std::collections::HashMap;
 
@@ -63,25 +65,50 @@ pub async fn get_active_position_ids() -> Result<Vec<U256>, Box<dyn std::error::
     Ok(filtered_position_ids)
 }
 
-pub async fn get_init_pos_info<
+pub async fn get_init_pos_infos<
     T: Transport + ::core::clone::Clone,
     P: Provider<T, N>,
     N: Network,
 >(
     provider: &P,
-    pos_id: U256,
-) -> Result<IInitLens::PosInfo, Box<dyn std::error::Error>> {
+    pos_ids: Vec<U256>,
+) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
     // init lens instance
     let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
 
-    let builder = init_lens.getInitPosInfo(pos_id);
+    let builder = init_lens.getInitPosInfos(pos_ids);
 
     // call
     let data = builder.call().await?;
 
     // destruct return data
-    let info = data.posInfo;
-    // let health = info.health_e18;
-    // let health_string: String = format_units(health, 18)?;
-    Ok(info)
+    let pos_infos = data.posInfos;
+    Ok(pos_infos)
+}
+
+pub async fn get_int_pos_infos_chunk<
+    T: Transport + ::core::clone::Clone,
+    P: Provider<T, N>,
+    N: Network,
+>(
+    provider: &P,
+    pos_ids: Vec<U256>,
+    chunks: usize,
+) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
+    let chunks = pos_ids.chunks(chunks);
+
+    let mut handles = Vec::new();
+
+    for chunk in chunks {
+        let chunk_vec = chunk.to_vec();
+        handles.push(get_init_pos_infos(provider, chunk_vec));
+    }
+
+    let result = join_all(handles);
+    println!("Sequential Results: {:#?}", result);
+    // .into_iter()
+    // .flat_map(Result::unwrap)
+    // .collect::<Vec<IInitLens::PosInfo>>();
+
+    Ok(result)
 }
