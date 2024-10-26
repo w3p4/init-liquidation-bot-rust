@@ -1,15 +1,11 @@
 use std::sync::Arc;
-use futures::TryFutureExt;
-// use tokio::sync
-// use futures::future::join_all;
-// use futures::join;
 use serde::Deserialize;
 use tokio::sync::Semaphore;
 use std::collections::HashMap;
 
 use alloy::{
     contract::private::{Network, Provider, Transport},
-    primitives::{utils::format_units, Address, U256},
+    primitives::{ Address, U256},
 };
 
 use foundry_contracts::iinitlens::IInitLens;
@@ -77,6 +73,7 @@ pub async fn get_init_pos_infos<
     provider: &P,
     pos_ids: Vec<U256>,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
+    println!("F");
     // init lens instance
     let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
 
@@ -99,32 +96,113 @@ pub async fn get_int_pos_infos_chunk<
     pos_ids: Vec<U256>,
     chunks: usize,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
-    let semaphore = Arc::new(Semaphore::new(10));
+    // Divide position ids to chunks.
     let chunks = pos_ids.chunks(chunks);
-
-    let mut handles = Vec::new();
-
+    // Define maximum number of parallel requests.
+    let semaphore = Arc::new(Semaphore::new(1));
+    // Spawn many tasks that will send requests.
+    let mut jhs = Vec::new();
     for chunk in chunks {
         let semaphore = semaphore.clone();
         let provider = provider.clone();
         let chunk_vec = chunk.to_vec();
+        println!("A");
         let jh = tokio::spawn(async move{
+            // Acquire permit before sending request.
             let _permit = semaphore.acquire().await.unwrap();
-            let response = get_init_pos_infos(&provider, chunk_vec).await.unwrap();
+            println!("B");
+            // Send the tx.
+            let response = get_init_pos_infos(&provider, chunk_vec).await;
+            // Drop the permit after the request has been sent.
             drop(_permit);
-            response
+            println!("C");
+            // Handle response.
+            response.unwrap()
         });
-        handles.push(jh);
+        jhs.push(jh);
     }
 
+    // Collect responses from tasks.
     let mut responses = Vec::new();
-    for handle in handles{
-        let response = handle.await.unwrap();
+    for jh in jhs{
+        println!("D");
+        let response = jh.await.unwrap();
+        println!("E");
         responses.push(response);
     }
    let flattened_responses = responses.into_iter().flatten().collect::<Vec<IInitLens::PosInfo>>();
     Ok(flattened_responses)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
