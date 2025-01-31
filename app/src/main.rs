@@ -1,35 +1,28 @@
-use alloy::{
-    primitives::utils::format_units,
-    providers::ProviderBuilder,
-};
+use alloy::{primitives::utils::format_units, providers::ProviderBuilder};
 
 use eyre::Result;
 
 mod positions;
 
-// constants
-const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
-const _INIT_CORE: &str = "0x972BcB0284cca0152527c4f70f8F689852bCAFc5";
-const _POS_MANAGER: &str = "0x0e7401707CD08c03CDb53DAEF3295DDFb68BBa92";
-const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
+const RPC_URL: &str = "https://rpc.mantle.xyz";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Spin up a forked Anvil node.
+    let provider =
+        ProviderBuilder::new().on_anvil_with_wallet_and_config(|anvil| anvil.fork(RPC_URL));
+
     // get active positions
     let pos = positions::get_active_position_ids().await?;
 
-    // Spin up a forked Anvil node.
-    // Ensure `anvil` is available in $PATH.
-    let rpc_url = "https://rpc.mantle.xyz";
-    let provider =
-        ProviderBuilder::new().on_anvil_with_wallet_and_config(|anvil| anvil.fork(rpc_url));
+    let pos = pos[0..50].to_vec();
+    let pos_infos = positions::get_int_pos_infos_chunk(provider, pos, 150).await?;
 
-    let pos = pos[0..200].to_vec();
-    let pos_info = positions::get_int_pos_infos_chunk(provider, pos, 150).await?;
-    let health = pos_info[0].health_e18;
-    let health_string: String = format_units(health, 18)?;
-
+    let len = pos_infos.len();
+    println!("Unhealthy position: {len}");
+    // let health = pos_infos[0].health_e18;
+    // let health_string: String = format_units(health, 18)?;
     // print Info
-    println!("health: {health_string}");
+    // println!("health: {health_string}");
     Ok(())
 }

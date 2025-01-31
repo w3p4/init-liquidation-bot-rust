@@ -13,6 +13,10 @@ use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
 
 const BACKEND_API: &str = "https://index.init.capital/positions/positions";
 const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
+const _INIT_CORE: &str = "0x972BcB0284cca0152527c4f70f8F689852bCAFc5";
+const _POS_MANAGER: &str = "0x0e7401707CD08c03CDb53DAEF3295DDFb68BBa92";
+const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
+const ONE_E18: f64 = 1e18;
 
 #[derive(Deserialize)]
 pub struct RawData {
@@ -94,11 +98,7 @@ pub async fn get_active_position_ids() -> Result<Vec<U256>, PositionError> {
         })
         .collect();
 
-    println!(
-        "Found {} active positions from {} positions.",
-        filtered_position_ids.len(),
-        resp.data.len()
-    );
+    println!("Found active: {}/{} positions.", filtered_position_ids.len(), resp.data.len());
     Ok(filtered_position_ids)
 }
 
@@ -112,7 +112,9 @@ pub async fn get_init_pos_infos<
     pos_ids: Vec<U256>,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
     let pos_infos = init_lens.getInitPosInfos(pos_ids).call().await?.posInfos;
-    Ok(pos_infos)
+    let filtered_pos_infos =
+        pos_infos.iter().filter(|pos_info| filter_low_health(pos_info)).cloned().collect();
+    Ok(filtered_pos_infos)
 }
 
 pub async fn get_int_pos_infos_chunk<
@@ -125,7 +127,7 @@ pub async fn get_int_pos_infos_chunk<
     chunk_size: usize,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
     let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
-    let semaphore = Arc::new(Semaphore::new(2));
+    let semaphore = Arc::new(Semaphore::new(4));
     let results = futures::stream::iter(pos_ids.chunks(chunk_size))
         .map(|chunk| {
             let semaphore = Arc::clone(&semaphore);
@@ -139,13 +141,20 @@ pub async fn get_int_pos_infos_chunk<
                 result
             }
         })
-        .buffer_unordered(2) // Process up to 2 concurrent requests
+        .buffer_unordered(4) // Process up to 2 concurrent requests
         .collect::<Vec<Result<Vec<IInitLens::PosInfo>, _>>>()
         .await;
 
     // Combine all results, propagating any errors
     let flattened: Vec<IInitLens::PosInfo> =
         results.into_iter().collect::<Result<Vec<_>, _>>()?.into_iter().flatten().collect();
-
     Ok(flattened)
+}
+
+fn filter_low_health(pos_info: &IInitLens::PosInfo) -> bool {
+    let one_e18 = U256::from(ONE_E18);
+    let is_below_one = pos_info.health_e18 < one_e18;
+    let low_health = one_e18 * U256::from(6) / U256::from(10);
+    let is_greater_low_health = pos_info.health_e18 > low_health;
+    is_below_one && is_greater_low_health
 }
