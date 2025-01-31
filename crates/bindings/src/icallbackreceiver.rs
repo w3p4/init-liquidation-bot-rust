@@ -36,7 +36,13 @@ interface ICallbackReceiver {
   }
 ]
 ```*/
-#[allow(non_camel_case_types, non_snake_case, clippy::style)]
+#[allow(
+    non_camel_case_types,
+    non_snake_case,
+    clippy::pub_underscore_fields,
+    clippy::style,
+    clippy::empty_structs_with_brackets
+)]
 pub mod ICallbackReceiver {
     use super::*;
     use alloy::sol_types as alloy_sol_types;
@@ -64,19 +70,27 @@ pub mod ICallbackReceiver {
 ```solidity
 function coreCallback(address _sender, bytes memory _data) external payable returns (bytes memory result);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct coreCallbackCall {
+        #[allow(missing_docs)]
         pub _sender: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _data: alloy::sol_types::private::Bytes,
     }
     ///Container type for the return parameters of the [`coreCallback(address,bytes)`](coreCallbackCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct coreCallbackReturn {
+        #[allow(missing_docs)]
         pub result: alloy::sol_types::private::Bytes,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -197,6 +211,7 @@ function coreCallback(address _sender, bytes memory _data) external payable retu
     };
     ///Container for all the [`ICallbackReceiver`](self) function calls.
     pub enum ICallbackReceiverCalls {
+        #[allow(missing_docs)]
         coreCallback(coreCallbackCall),
     }
     #[automatically_derived]
@@ -231,7 +246,7 @@ function coreCallback(address _sender, bytes memory _data) external payable retu
             Self::SELECTORS.binary_search(&selector).is_ok()
         }
         #[inline]
-        #[allow(unsafe_code, non_snake_case)]
+        #[allow(non_snake_case)]
         fn abi_decode_raw(
             selector: [u8; 4],
             data: &[u8],
@@ -263,7 +278,7 @@ function coreCallback(address _sender, bytes memory _data) external payable retu
                     ),
                 );
             };
-            (unsafe { DECODE_SHIMS.get_unchecked(idx) })(data, validate)
+            DECODE_SHIMS[idx](data, validate)
         }
         #[inline]
         fn abi_encoded_size(&self) -> usize {

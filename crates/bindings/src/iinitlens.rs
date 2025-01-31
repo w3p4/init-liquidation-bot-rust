@@ -822,7 +822,13 @@ interface IInitLens {
   }
 ]
 ```*/
-#[allow(non_camel_case_types, non_snake_case, clippy::style)]
+#[allow(
+    non_camel_case_types,
+    non_snake_case,
+    clippy::pub_underscore_fields,
+    clippy::style,
+    clippy::empty_structs_with_brackets
+)]
 pub mod IInitLens {
     use super::*;
     use alloy::sol_types as alloy_sol_types;
@@ -849,14 +855,26 @@ pub mod IInitLens {
     /**```solidity
 struct BorrInfo { address[] pools; uint256[] debtShares; uint256[] debts; }
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct BorrInfo {
+        #[allow(missing_docs)]
         pub pools: alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
-        pub debtShares: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
-        pub debts: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+        #[allow(missing_docs)]
+        pub debtShares: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::primitives::aliases::U256,
+        >,
+        #[allow(missing_docs)]
+        pub debts: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::primitives::aliases::U256,
+        >,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         #[doc(hidden)]
@@ -868,8 +886,12 @@ struct BorrInfo { address[] pools; uint256[] debtShares; uint256[] debts; }
         #[doc(hidden)]
         type UnderlyingRustTuple<'a> = (
             alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
-            alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
-            alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+            alloy::sol_types::private::Vec<
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
+            alloy::sol_types::private::Vec<
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
         );
         #[cfg(test)]
         #[allow(dead_code, unreachable_patterns)]
@@ -1086,21 +1108,40 @@ struct BorrInfo { address[] pools; uint256[] debtShares; uint256[] debts; }
     /**```solidity
 struct CollInfo { address[] pools; uint256[] shares; uint256[] amts; address[] wLps; uint256[][] ids; uint256[][] wLpAmts; }
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct CollInfo {
+        #[allow(missing_docs)]
         pub pools: alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
-        pub shares: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
-        pub amts: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
-        pub wLps: alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
-        pub ids: alloy::sol_types::private::Vec<
-            alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+        #[allow(missing_docs)]
+        pub shares: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::primitives::aliases::U256,
         >,
+        #[allow(missing_docs)]
+        pub amts: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::primitives::aliases::U256,
+        >,
+        #[allow(missing_docs)]
+        pub wLps: alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
+        #[allow(missing_docs)]
+        pub ids: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::Vec<
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
+        >,
+        #[allow(missing_docs)]
         pub wLpAmts: alloy::sol_types::private::Vec<
-            alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+            alloy::sol_types::private::Vec<
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
         >,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         #[doc(hidden)]
@@ -1119,14 +1160,22 @@ struct CollInfo { address[] pools; uint256[] shares; uint256[] amts; address[] w
         #[doc(hidden)]
         type UnderlyingRustTuple<'a> = (
             alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
-            alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
-            alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
-            alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
             alloy::sol_types::private::Vec<
-                alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+                alloy::sol_types::private::primitives::aliases::U256,
             >,
             alloy::sol_types::private::Vec<
-                alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
+            alloy::sol_types::private::Vec<alloy::sol_types::private::Address>,
+            alloy::sol_types::private::Vec<
+                alloy::sol_types::private::Vec<
+                    alloy::sol_types::private::primitives::aliases::U256,
+                >,
+            >,
+            alloy::sol_types::private::Vec<
+                alloy::sol_types::private::Vec<
+                    alloy::sol_types::private::primitives::aliases::U256,
+                >,
             >,
         );
         #[cfg(test)]
@@ -1417,20 +1466,34 @@ struct CollInfo { address[] pools; uint256[] shares; uint256[] amts; address[] w
     /**```solidity
 struct PosInfo { CollInfo collInfo; BorrInfo borrInfo; uint256 collCredit_e36; uint256 borrCredit_e36; uint256 health_e18; uint16 mode; address viewer; address owner; uint256 posId; }
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct PosInfo {
+        #[allow(missing_docs)]
         pub collInfo: <CollInfo as alloy::sol_types::SolType>::RustType,
+        #[allow(missing_docs)]
         pub borrInfo: <BorrInfo as alloy::sol_types::SolType>::RustType,
-        pub collCredit_e36: alloy::sol_types::private::U256,
-        pub borrCredit_e36: alloy::sol_types::private::U256,
-        pub health_e18: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub collCredit_e36: alloy::sol_types::private::primitives::aliases::U256,
+        #[allow(missing_docs)]
+        pub borrCredit_e36: alloy::sol_types::private::primitives::aliases::U256,
+        #[allow(missing_docs)]
+        pub health_e18: alloy::sol_types::private::primitives::aliases::U256,
+        #[allow(missing_docs)]
         pub mode: u16,
+        #[allow(missing_docs)]
         pub viewer: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub owner: alloy::sol_types::private::Address,
-        pub posId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub posId: alloy::sol_types::private::primitives::aliases::U256,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         #[doc(hidden)]
@@ -1449,13 +1512,13 @@ struct PosInfo { CollInfo collInfo; BorrInfo borrInfo; uint256 collCredit_e36; u
         type UnderlyingRustTuple<'a> = (
             <CollInfo as alloy::sol_types::SolType>::RustType,
             <BorrInfo as alloy::sol_types::SolType>::RustType,
-            alloy::sol_types::private::U256,
-            alloy::sol_types::private::U256,
-            alloy::sol_types::private::U256,
+            alloy::sol_types::private::primitives::aliases::U256,
+            alloy::sol_types::private::primitives::aliases::U256,
+            alloy::sol_types::private::primitives::aliases::U256,
             u16,
             alloy::sol_types::private::Address,
             alloy::sol_types::private::Address,
-            alloy::sol_types::private::U256,
+            alloy::sol_types::private::primitives::aliases::U256,
         );
         #[cfg(test)]
         #[allow(dead_code, unreachable_patterns)]
@@ -1790,20 +1853,29 @@ struct PosInfo { CollInfo collInfo; BorrInfo borrInfo; uint256 collCredit_e36; u
 ```solidity
 function getHookPosInfo(address _hook, address _user, uint256 _posId) external returns (PosInfo memory posInfo);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getHookPosInfoCall {
+        #[allow(missing_docs)]
         pub _hook: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _user: alloy::sol_types::private::Address,
-        pub _posId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _posId: alloy::sol_types::private::primitives::aliases::U256,
     }
     ///Container type for the return parameters of the [`getHookPosInfo(address,address,uint256)`](getHookPosInfoCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getHookPosInfoReturn {
+        #[allow(missing_docs)]
         pub posInfo: <PosInfo as alloy::sol_types::SolType>::RustType,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -1817,7 +1889,7 @@ function getHookPosInfo(address _hook, address _user, uint256 _posId) external r
             type UnderlyingRustTuple<'a> = (
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -1937,22 +2009,33 @@ function getHookPosInfo(address _hook, address _user, uint256 _posId) external r
 ```solidity
 function getHookPosInfos(address _hook, address _user, uint256[] memory _posIds) external returns (PosInfo[] memory posInfos);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getHookPosInfosCall {
+        #[allow(missing_docs)]
         pub _hook: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _user: alloy::sol_types::private::Address,
-        pub _posIds: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+        #[allow(missing_docs)]
+        pub _posIds: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::primitives::aliases::U256,
+        >,
     }
     ///Container type for the return parameters of the [`getHookPosInfos(address,address,uint256[])`](getHookPosInfosCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getHookPosInfosReturn {
+        #[allow(missing_docs)]
         pub posInfos: alloy::sol_types::private::Vec<
             <PosInfo as alloy::sol_types::SolType>::RustType,
         >,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -1966,7 +2049,9 @@ function getHookPosInfos(address _hook, address _user, uint256[] memory _posIds)
             type UnderlyingRustTuple<'a> = (
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+                alloy::sol_types::private::Vec<
+                    alloy::sol_types::private::primitives::aliases::U256,
+                >,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -2088,25 +2173,34 @@ function getHookPosInfos(address _hook, address _user, uint256[] memory _posIds)
 ```solidity
 function getInitPosInfo(uint256 _initPosId) external returns (PosInfo memory posInfo);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getInitPosInfoCall {
-        pub _initPosId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _initPosId: alloy::sol_types::private::primitives::aliases::U256,
     }
     ///Container type for the return parameters of the [`getInitPosInfo(uint256)`](getInitPosInfoCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getInitPosInfoReturn {
+        #[allow(missing_docs)]
         pub posInfo: <PosInfo as alloy::sol_types::SolType>::RustType,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
             #[doc(hidden)]
             type UnderlyingSolTuple<'a> = (alloy::sol_types::sol_data::Uint<256>,);
             #[doc(hidden)]
-            type UnderlyingRustTuple<'a> = (alloy::sol_types::private::U256,);
+            type UnderlyingRustTuple<'a> = (
+                alloy::sol_types::private::primitives::aliases::U256,
+            );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
             fn _type_assertion(
@@ -2211,20 +2305,29 @@ function getInitPosInfo(uint256 _initPosId) external returns (PosInfo memory pos
 ```solidity
 function getInitPosInfos(uint256[] memory _initPosIds) external returns (PosInfo[] memory posInfos);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getInitPosInfosCall {
-        pub _initPosIds: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+        #[allow(missing_docs)]
+        pub _initPosIds: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::primitives::aliases::U256,
+        >,
     }
     ///Container type for the return parameters of the [`getInitPosInfos(uint256[])`](getInitPosInfosCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getInitPosInfosReturn {
+        #[allow(missing_docs)]
         pub posInfos: alloy::sol_types::private::Vec<
             <PosInfo as alloy::sol_types::SolType>::RustType,
         >,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -2234,7 +2337,9 @@ function getInitPosInfos(uint256[] memory _initPosIds) external returns (PosInfo
             );
             #[doc(hidden)]
             type UnderlyingRustTuple<'a> = (
-                alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+                alloy::sol_types::private::Vec<
+                    alloy::sol_types::private::primitives::aliases::U256,
+                >,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -2344,19 +2449,27 @@ function getInitPosInfos(uint256[] memory _initPosIds) external returns (PosInfo
 ```solidity
 function modeBorrowableAmt(uint16 _mode, address _pool) external returns (uint256 borrowableAmt);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct modeBorrowableAmtCall {
+        #[allow(missing_docs)]
         pub _mode: u16,
+        #[allow(missing_docs)]
         pub _pool: alloy::sol_types::private::Address,
     }
     ///Container type for the return parameters of the [`modeBorrowableAmt(uint16,address)`](modeBorrowableAmtCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct modeBorrowableAmtReturn {
-        pub borrowableAmt: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub borrowableAmt: alloy::sol_types::private::primitives::aliases::U256,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -2402,7 +2515,9 @@ function modeBorrowableAmt(uint16 _mode, address _pool) external returns (uint25
             #[doc(hidden)]
             type UnderlyingSolTuple<'a> = (alloy::sol_types::sol_data::Uint<256>,);
             #[doc(hidden)]
-            type UnderlyingRustTuple<'a> = (alloy::sol_types::private::U256,);
+            type UnderlyingRustTuple<'a> = (
+                alloy::sol_types::private::primitives::aliases::U256,
+            );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
             fn _type_assertion(
@@ -2480,21 +2595,31 @@ function modeBorrowableAmt(uint16 _mode, address _pool) external returns (uint25
 ```solidity
 function posBorrowableAmt(address _hook, address _user, uint256 _posId, address _pool) external returns (uint256 borrowableAmt);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct posBorrowableAmtCall {
+        #[allow(missing_docs)]
         pub _hook: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _user: alloy::sol_types::private::Address,
-        pub _posId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _posId: alloy::sol_types::private::primitives::aliases::U256,
+        #[allow(missing_docs)]
         pub _pool: alloy::sol_types::private::Address,
     }
     ///Container type for the return parameters of the [`posBorrowableAmt(address,address,uint256,address)`](posBorrowableAmtCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct posBorrowableAmtReturn {
-        pub borrowableAmt: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub borrowableAmt: alloy::sol_types::private::primitives::aliases::U256,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -2509,7 +2634,7 @@ function posBorrowableAmt(address _hook, address _user, uint256 _posId, address 
             type UnderlyingRustTuple<'a> = (
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
                 alloy::sol_types::private::Address,
             );
             #[cfg(test)]
@@ -2549,7 +2674,9 @@ function posBorrowableAmt(address _hook, address _user, uint256 _posId, address 
             #[doc(hidden)]
             type UnderlyingSolTuple<'a> = (alloy::sol_types::sol_data::Uint<256>,);
             #[doc(hidden)]
-            type UnderlyingRustTuple<'a> = (alloy::sol_types::private::U256,);
+            type UnderlyingRustTuple<'a> = (
+                alloy::sol_types::private::primitives::aliases::U256,
+            );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
             fn _type_assertion(
@@ -2635,19 +2762,27 @@ function posBorrowableAmt(address _hook, address _user, uint256 _posId, address 
 ```solidity
 function viewerPosInfoAt(address _viewer, uint256 _index) external returns (PosInfo memory posInfo);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct viewerPosInfoAtCall {
+        #[allow(missing_docs)]
         pub _viewer: alloy::sol_types::private::Address,
-        pub _index: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _index: alloy::sol_types::private::primitives::aliases::U256,
     }
     ///Container type for the return parameters of the [`viewerPosInfoAt(address,uint256)`](viewerPosInfoAtCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct viewerPosInfoAtReturn {
+        #[allow(missing_docs)]
         pub posInfo: <PosInfo as alloy::sol_types::SolType>::RustType,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -2659,7 +2794,7 @@ function viewerPosInfoAt(address _viewer, uint256 _index) external returns (PosI
             #[doc(hidden)]
             type UnderlyingRustTuple<'a> = (
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -2774,21 +2909,31 @@ function viewerPosInfoAt(address _viewer, uint256 _index) external returns (PosI
 ```solidity
 function viewerPosInfos(address _viewer, uint256[] memory _indices) external returns (PosInfo[] memory posInfos);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct viewerPosInfosCall {
+        #[allow(missing_docs)]
         pub _viewer: alloy::sol_types::private::Address,
-        pub _indices: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+        #[allow(missing_docs)]
+        pub _indices: alloy::sol_types::private::Vec<
+            alloy::sol_types::private::primitives::aliases::U256,
+        >,
     }
     ///Container type for the return parameters of the [`viewerPosInfos(address,uint256[])`](viewerPosInfosCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct viewerPosInfosReturn {
+        #[allow(missing_docs)]
         pub posInfos: alloy::sol_types::private::Vec<
             <PosInfo as alloy::sol_types::SolType>::RustType,
         >,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -2800,7 +2945,9 @@ function viewerPosInfos(address _viewer, uint256[] memory _indices) external ret
             #[doc(hidden)]
             type UnderlyingRustTuple<'a> = (
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+                alloy::sol_types::private::Vec<
+                    alloy::sol_types::private::primitives::aliases::U256,
+                >,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -2915,13 +3062,21 @@ function viewerPosInfos(address _viewer, uint256[] memory _indices) external ret
     };
     ///Container for all the [`IInitLens`](self) function calls.
     pub enum IInitLensCalls {
+        #[allow(missing_docs)]
         getHookPosInfo(getHookPosInfoCall),
+        #[allow(missing_docs)]
         getHookPosInfos(getHookPosInfosCall),
+        #[allow(missing_docs)]
         getInitPosInfo(getInitPosInfoCall),
+        #[allow(missing_docs)]
         getInitPosInfos(getInitPosInfosCall),
+        #[allow(missing_docs)]
         modeBorrowableAmt(modeBorrowableAmtCall),
+        #[allow(missing_docs)]
         posBorrowableAmt(posBorrowableAmtCall),
+        #[allow(missing_docs)]
         viewerPosInfoAt(viewerPosInfoAtCall),
+        #[allow(missing_docs)]
         viewerPosInfos(viewerPosInfosCall),
     }
     #[automatically_derived]
@@ -2986,7 +3141,7 @@ function viewerPosInfos(address _viewer, uint256[] memory _indices) external ret
             Self::SELECTORS.binary_search(&selector).is_ok()
         }
         #[inline]
-        #[allow(unsafe_code, non_snake_case)]
+        #[allow(non_snake_case)]
         fn abi_decode_raw(
             selector: [u8; 4],
             data: &[u8],
@@ -3109,7 +3264,7 @@ function viewerPosInfos(address _viewer, uint256[] memory _indices) external ret
                     ),
                 );
             };
-            (unsafe { DECODE_SHIMS.get_unchecked(idx) })(data, validate)
+            DECODE_SHIMS[idx](data, validate)
         }
         #[inline]
         fn abi_encoded_size(&self) -> usize {
@@ -3379,7 +3534,7 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
             &self,
             _hook: alloy::sol_types::private::Address,
             _user: alloy::sol_types::private::Address,
-            _posId: alloy::sol_types::private::U256,
+            _posId: alloy::sol_types::private::primitives::aliases::U256,
         ) -> alloy_contract::SolCallBuilder<T, &P, getHookPosInfoCall, N> {
             self.call_builder(
                 &getHookPosInfoCall {
@@ -3394,7 +3549,9 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
             &self,
             _hook: alloy::sol_types::private::Address,
             _user: alloy::sol_types::private::Address,
-            _posIds: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+            _posIds: alloy::sol_types::private::Vec<
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
         ) -> alloy_contract::SolCallBuilder<T, &P, getHookPosInfosCall, N> {
             self.call_builder(
                 &getHookPosInfosCall {
@@ -3407,14 +3564,16 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         ///Creates a new call builder for the [`getInitPosInfo`] function.
         pub fn getInitPosInfo(
             &self,
-            _initPosId: alloy::sol_types::private::U256,
+            _initPosId: alloy::sol_types::private::primitives::aliases::U256,
         ) -> alloy_contract::SolCallBuilder<T, &P, getInitPosInfoCall, N> {
             self.call_builder(&getInitPosInfoCall { _initPosId })
         }
         ///Creates a new call builder for the [`getInitPosInfos`] function.
         pub fn getInitPosInfos(
             &self,
-            _initPosIds: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+            _initPosIds: alloy::sol_types::private::Vec<
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
         ) -> alloy_contract::SolCallBuilder<T, &P, getInitPosInfosCall, N> {
             self.call_builder(&getInitPosInfosCall { _initPosIds })
         }
@@ -3436,7 +3595,7 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
             &self,
             _hook: alloy::sol_types::private::Address,
             _user: alloy::sol_types::private::Address,
-            _posId: alloy::sol_types::private::U256,
+            _posId: alloy::sol_types::private::primitives::aliases::U256,
             _pool: alloy::sol_types::private::Address,
         ) -> alloy_contract::SolCallBuilder<T, &P, posBorrowableAmtCall, N> {
             self.call_builder(
@@ -3452,7 +3611,7 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         pub fn viewerPosInfoAt(
             &self,
             _viewer: alloy::sol_types::private::Address,
-            _index: alloy::sol_types::private::U256,
+            _index: alloy::sol_types::private::primitives::aliases::U256,
         ) -> alloy_contract::SolCallBuilder<T, &P, viewerPosInfoAtCall, N> {
             self.call_builder(
                 &viewerPosInfoAtCall {
@@ -3465,7 +3624,9 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         pub fn viewerPosInfos(
             &self,
             _viewer: alloy::sol_types::private::Address,
-            _indices: alloy::sol_types::private::Vec<alloy::sol_types::private::U256>,
+            _indices: alloy::sol_types::private::Vec<
+                alloy::sol_types::private::primitives::aliases::U256,
+            >,
         ) -> alloy_contract::SolCallBuilder<T, &P, viewerPosInfosCall, N> {
             self.call_builder(
                 &viewerPosInfosCall {

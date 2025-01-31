@@ -194,7 +194,13 @@ interface IERC20LiquidationBot {
   }
 ]
 ```*/
-#[allow(non_camel_case_types, non_snake_case, clippy::style)]
+#[allow(
+    non_camel_case_types,
+    non_snake_case,
+    clippy::pub_underscore_fields,
+    clippy::style,
+    clippy::empty_structs_with_brackets
+)]
 pub mod IERC20LiquidationBot {
     use super::*;
     use alloy::sol_types as alloy_sol_types;
@@ -222,19 +228,27 @@ pub mod IERC20LiquidationBot {
 ```solidity
 function coreCallback(address _sender, bytes memory _data) external payable returns (bytes memory result);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct coreCallbackCall {
+        #[allow(missing_docs)]
         pub _sender: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _data: alloy::sol_types::private::Bytes,
     }
     ///Container type for the return parameters of the [`coreCallback(address,bytes)`](coreCallbackCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct coreCallbackReturn {
+        #[allow(missing_docs)]
         pub result: alloy::sol_types::private::Bytes,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -357,22 +371,34 @@ function coreCallback(address _sender, bytes memory _data) external payable retu
 ```solidity
 function flashLiquidate(uint256 _posId, address _poolToBorrow, address _router, address _poolToRepay, address _router2, address _poolOut, uint256 _minAmtOut) external;
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct flashLiquidateCall {
-        pub _posId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _posId: alloy::sol_types::private::primitives::aliases::U256,
+        #[allow(missing_docs)]
         pub _poolToBorrow: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _router: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _poolToRepay: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _router2: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _poolOut: alloy::sol_types::private::Address,
-        pub _minAmtOut: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _minAmtOut: alloy::sol_types::private::primitives::aliases::U256,
     }
     ///Container type for the return parameters of the [`flashLiquidate(uint256,address,address,address,address,address,uint256)`](flashLiquidateCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct flashLiquidateReturn {}
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -388,13 +414,13 @@ function flashLiquidate(uint256 _posId, address _poolToBorrow, address _router, 
             );
             #[doc(hidden)]
             type UnderlyingRustTuple<'a> = (
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -540,23 +566,36 @@ function flashLiquidate(uint256 _posId, address _poolToBorrow, address _router, 
 ```solidity
 function flashLiquidateReturnNative(uint256 _posId, address _poolToBorrow, address _router, address _poolToRepay, address _router2, address _poolOut, address _router3, uint256 _minAmtOut) external;
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct flashLiquidateReturnNativeCall {
-        pub _posId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _posId: alloy::sol_types::private::primitives::aliases::U256,
+        #[allow(missing_docs)]
         pub _poolToBorrow: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _router: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _poolToRepay: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _router2: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _poolOut: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _router3: alloy::sol_types::private::Address,
-        pub _minAmtOut: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _minAmtOut: alloy::sol_types::private::primitives::aliases::U256,
     }
     ///Container type for the return parameters of the [`flashLiquidateReturnNative(uint256,address,address,address,address,address,address,uint256)`](flashLiquidateReturnNativeCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct flashLiquidateReturnNativeReturn {}
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -573,14 +612,14 @@ function flashLiquidateReturnNative(uint256 _posId, address _poolToBorrow, addre
             );
             #[doc(hidden)]
             type UnderlyingRustTuple<'a> = (
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -734,27 +773,38 @@ function flashLiquidateReturnNative(uint256 _posId, address _poolToBorrow, addre
 ```solidity
 function getLiquidationInfo(uint256 _posId) external returns (address bestPoolToRepay, address bestPoolOut, uint256 maxRepayAmt);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getLiquidationInfoCall {
-        pub _posId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _posId: alloy::sol_types::private::primitives::aliases::U256,
     }
     ///Container type for the return parameters of the [`getLiquidationInfo(uint256)`](getLiquidationInfoCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getLiquidationInfoReturn {
+        #[allow(missing_docs)]
         pub bestPoolToRepay: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub bestPoolOut: alloy::sol_types::private::Address,
-        pub maxRepayAmt: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub maxRepayAmt: alloy::sol_types::private::primitives::aliases::U256,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
             #[doc(hidden)]
             type UnderlyingSolTuple<'a> = (alloy::sol_types::sol_data::Uint<256>,);
             #[doc(hidden)]
-            type UnderlyingRustTuple<'a> = (alloy::sol_types::private::U256,);
+            type UnderlyingRustTuple<'a> = (
+                alloy::sol_types::private::primitives::aliases::U256,
+            );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
             fn _type_assertion(
@@ -794,7 +844,7 @@ function getLiquidationInfo(uint256 _posId) external returns (address bestPoolTo
             type UnderlyingRustTuple<'a> = (
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -875,21 +925,31 @@ function getLiquidationInfo(uint256 _posId) external returns (address bestPoolTo
 ```solidity
 function getMaxRepayAmt(uint256 _posId, address _poolToRepay, address _poolOut) external returns (address repayToken, uint256 maxRepayAmt);
 ```*/
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getMaxRepayAmtCall {
-        pub _posId: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub _posId: alloy::sol_types::private::primitives::aliases::U256,
+        #[allow(missing_docs)]
         pub _poolToRepay: alloy::sol_types::private::Address,
+        #[allow(missing_docs)]
         pub _poolOut: alloy::sol_types::private::Address,
     }
     ///Container type for the return parameters of the [`getMaxRepayAmt(uint256,address,address)`](getMaxRepayAmtCall) function.
-    #[allow(non_camel_case_types, non_snake_case)]
+    #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
     pub struct getMaxRepayAmtReturn {
+        #[allow(missing_docs)]
         pub repayToken: alloy::sol_types::private::Address,
-        pub maxRepayAmt: alloy::sol_types::private::U256,
+        #[allow(missing_docs)]
+        pub maxRepayAmt: alloy::sol_types::private::primitives::aliases::U256,
     }
-    #[allow(non_camel_case_types, non_snake_case, clippy::style)]
+    #[allow(
+        non_camel_case_types,
+        non_snake_case,
+        clippy::pub_underscore_fields,
+        clippy::style
+    )]
     const _: () = {
         use alloy::sol_types as alloy_sol_types;
         {
@@ -901,7 +961,7 @@ function getMaxRepayAmt(uint256 _posId, address _poolToRepay, address _poolOut) 
             );
             #[doc(hidden)]
             type UnderlyingRustTuple<'a> = (
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
                 alloy::sol_types::private::Address,
                 alloy::sol_types::private::Address,
             );
@@ -944,7 +1004,7 @@ function getMaxRepayAmt(uint256 _posId, address _poolToRepay, address _poolOut) 
             #[doc(hidden)]
             type UnderlyingRustTuple<'a> = (
                 alloy::sol_types::private::Address,
-                alloy::sol_types::private::U256,
+                alloy::sol_types::private::primitives::aliases::U256,
             );
             #[cfg(test)]
             #[allow(dead_code, unreachable_patterns)]
@@ -1031,10 +1091,15 @@ function getMaxRepayAmt(uint256 _posId, address _poolToRepay, address _poolOut) 
     };
     ///Container for all the [`IERC20LiquidationBot`](self) function calls.
     pub enum IERC20LiquidationBotCalls {
+        #[allow(missing_docs)]
         coreCallback(coreCallbackCall),
+        #[allow(missing_docs)]
         flashLiquidate(flashLiquidateCall),
+        #[allow(missing_docs)]
         flashLiquidateReturnNative(flashLiquidateReturnNativeCall),
+        #[allow(missing_docs)]
         getLiquidationInfo(getLiquidationInfoCall),
+        #[allow(missing_docs)]
         getMaxRepayAmt(getMaxRepayAmtCall),
     }
     #[automatically_derived]
@@ -1087,7 +1152,7 @@ function getMaxRepayAmt(uint256 _posId, address _poolToRepay, address _poolOut) 
             Self::SELECTORS.binary_search(&selector).is_ok()
         }
         #[inline]
-        #[allow(unsafe_code, non_snake_case)]
+        #[allow(non_snake_case)]
         fn abi_decode_raw(
             selector: [u8; 4],
             data: &[u8],
@@ -1171,7 +1236,7 @@ function getMaxRepayAmt(uint256 _posId, address _poolToRepay, address _poolOut) 
                     ),
                 );
             };
-            (unsafe { DECODE_SHIMS.get_unchecked(idx) })(data, validate)
+            DECODE_SHIMS[idx](data, validate)
         }
         #[inline]
         fn abi_encoded_size(&self) -> usize {
@@ -1418,13 +1483,13 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         ///Creates a new call builder for the [`flashLiquidate`] function.
         pub fn flashLiquidate(
             &self,
-            _posId: alloy::sol_types::private::U256,
+            _posId: alloy::sol_types::private::primitives::aliases::U256,
             _poolToBorrow: alloy::sol_types::private::Address,
             _router: alloy::sol_types::private::Address,
             _poolToRepay: alloy::sol_types::private::Address,
             _router2: alloy::sol_types::private::Address,
             _poolOut: alloy::sol_types::private::Address,
-            _minAmtOut: alloy::sol_types::private::U256,
+            _minAmtOut: alloy::sol_types::private::primitives::aliases::U256,
         ) -> alloy_contract::SolCallBuilder<T, &P, flashLiquidateCall, N> {
             self.call_builder(
                 &flashLiquidateCall {
@@ -1441,14 +1506,14 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         ///Creates a new call builder for the [`flashLiquidateReturnNative`] function.
         pub fn flashLiquidateReturnNative(
             &self,
-            _posId: alloy::sol_types::private::U256,
+            _posId: alloy::sol_types::private::primitives::aliases::U256,
             _poolToBorrow: alloy::sol_types::private::Address,
             _router: alloy::sol_types::private::Address,
             _poolToRepay: alloy::sol_types::private::Address,
             _router2: alloy::sol_types::private::Address,
             _poolOut: alloy::sol_types::private::Address,
             _router3: alloy::sol_types::private::Address,
-            _minAmtOut: alloy::sol_types::private::U256,
+            _minAmtOut: alloy::sol_types::private::primitives::aliases::U256,
         ) -> alloy_contract::SolCallBuilder<T, &P, flashLiquidateReturnNativeCall, N> {
             self.call_builder(
                 &flashLiquidateReturnNativeCall {
@@ -1466,14 +1531,14 @@ the bytecode concatenated with the constructor's ABI-encoded arguments.*/
         ///Creates a new call builder for the [`getLiquidationInfo`] function.
         pub fn getLiquidationInfo(
             &self,
-            _posId: alloy::sol_types::private::U256,
+            _posId: alloy::sol_types::private::primitives::aliases::U256,
         ) -> alloy_contract::SolCallBuilder<T, &P, getLiquidationInfoCall, N> {
             self.call_builder(&getLiquidationInfoCall { _posId })
         }
         ///Creates a new call builder for the [`getMaxRepayAmt`] function.
         pub fn getMaxRepayAmt(
             &self,
-            _posId: alloy::sol_types::private::U256,
+            _posId: alloy::sol_types::private::primitives::aliases::U256,
             _poolToRepay: alloy::sol_types::private::Address,
             _poolOut: alloy::sol_types::private::Address,
         ) -> alloy_contract::SolCallBuilder<T, &P, getMaxRepayAmtCall, N> {
