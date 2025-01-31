@@ -1,7 +1,6 @@
 use alloy::{
-    primitives::{utils::format_units, Address},
+    primitives::utils::format_units,
     providers::ProviderBuilder,
-    transports::http::{Client, Http},
 };
 
 use eyre::Result;

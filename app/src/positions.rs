@@ -34,7 +34,7 @@ pub struct Position {
 }
 
 use thiserror::Error;
-use tracing::{debug, error, info};
+use tracing::error;
 
 #[derive(Error, Debug)]
 pub enum PositionError {
