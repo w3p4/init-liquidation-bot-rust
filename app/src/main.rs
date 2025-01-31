@@ -1,4 +1,5 @@
 use alloy::{primitives::utils::format_units, providers::ProviderBuilder};
+use reqwest::Url;
 
 use eyre::Result;
 
@@ -8,14 +9,13 @@ const RPC_URL: &str = "https://rpc.mantle.xyz";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Spin up a forked Anvil node.
-    let provider =
-        ProviderBuilder::new().on_anvil_with_wallet_and_config(|anvil| anvil.fork(RPC_URL));
+    let url = Url::parse(RPC_URL)?;
+    let provider = ProviderBuilder::new().with_recommended_fillers().on_http(url);
 
     // get active positions
     let pos = positions::get_active_position_ids().await?;
 
-    let pos = pos[0..50].to_vec();
+    let pos = pos.to_vec();
     let pos_infos = positions::get_int_pos_infos_chunk(provider, pos, 150).await?;
 
     let len = pos_infos.len();

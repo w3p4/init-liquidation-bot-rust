@@ -127,7 +127,7 @@ pub async fn get_int_pos_infos_chunk<
     chunk_size: usize,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
     let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
-    let semaphore = Arc::new(Semaphore::new(4));
+    let semaphore = Arc::new(Semaphore::new(10));
     let results = futures::stream::iter(pos_ids.chunks(chunk_size))
         .map(|chunk| {
             let semaphore = Arc::clone(&semaphore);
@@ -141,7 +141,7 @@ pub async fn get_int_pos_infos_chunk<
                 result
             }
         })
-        .buffer_unordered(4) // Process up to 2 concurrent requests
+        .buffer_unordered(10) // Process up to concurrent requests
         .collect::<Vec<Result<Vec<IInitLens::PosInfo>, _>>>()
         .await;
 
