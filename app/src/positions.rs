@@ -1,4 +1,5 @@
 use futures::stream::StreamExt;
+use redis::Commands;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -17,6 +18,9 @@ const _INIT_CORE: &str = "0x972BcB0284cca0152527c4f70f8F689852bCAFc5";
 const _POS_MANAGER: &str = "0x0e7401707CD08c03CDb53DAEF3295DDFb68BBa92";
 const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
 const ONE_E18: f64 = 1e18;
+const CONCURRENT: usize = 10;
+const REDIS_KEY: &str = "init-liquidation-bot";
+const CACHE_TIME: u64 = 60 * 30; // 30 minutes;
 
 #[derive(Deserialize)]
 pub struct RawData {
@@ -52,8 +56,30 @@ pub enum PositionError {
     UnexpectedStatus(u32),
 }
 
-pub async fn get_active_position_ids() -> Result<Vec<U256>, PositionError> {
-    println!("Fetching active positions from {}", BACKEND_API);
+pub async fn get_or_fetch_active_positions() -> Result<Vec<U256>, Box<dyn std::error::Error>> {
+    // connect to redis
+    let client = redis::Client::open("redis://192.168.1.95/")?;
+    let mut conn = client.get_connection()?;
+
+    let pos: Option<String> = conn.get(REDIS_KEY).unwrap_or_default();
+
+    match pos {
+        Some(pos) => {
+            println!("cache hit!");
+            let pos: Vec<U256> = serde_json::from_str(&pos)?;
+            Ok(pos)
+        }
+        None => {
+            println!("cache missed!");
+            let pos = get_active_position_ids().await?;
+            let _: () = conn.set_ex(REDIS_KEY, serde_json::to_string(&pos).unwrap(), CACHE_TIME)?;
+            Ok(pos)
+        }
+    }
+}
+
+async fn get_active_position_ids() -> Result<Vec<U256>, PositionError> {
+    println!("Fetching active positions");
 
     let resp = reqwest::get(BACKEND_API).await?.json::<RawPositions>().await?;
 
@@ -98,7 +124,6 @@ pub async fn get_active_position_ids() -> Result<Vec<U256>, PositionError> {
         })
         .collect();
 
-    println!("Found active: {}/{} positions.", filtered_position_ids.len(), resp.data.len());
     Ok(filtered_position_ids)
 }
 
@@ -127,7 +152,7 @@ pub async fn get_int_pos_infos_chunk<
     chunk_size: usize,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
     let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
-    let semaphore = Arc::new(Semaphore::new(10));
+    let semaphore = Arc::new(Semaphore::new(CONCURRENT));
     let results = futures::stream::iter(pos_ids.chunks(chunk_size))
         .map(|chunk| {
             let semaphore = Arc::clone(&semaphore);
@@ -141,7 +166,7 @@ pub async fn get_int_pos_infos_chunk<
                 result
             }
         })
-        .buffer_unordered(10) // Process up to concurrent requests
+        .buffer_unordered(CONCURRENT) // Process up to concurrent requests
         .collect::<Vec<Result<Vec<IInitLens::PosInfo>, _>>>()
         .await;
 
