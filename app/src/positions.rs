@@ -1,14 +1,15 @@
-use std::sync::Arc;
+use futures::stream::StreamExt;
 use serde::Deserialize;
-use tokio::sync::Semaphore;
 use std::collections::HashMap;
+use std::sync::Arc;
+use tokio::sync::Semaphore;
 
 use alloy::{
     contract::private::{Network, Provider, Transport},
-    primitives::{ Address, U256},
+    primitives::{Address, U256},
 };
 
-use foundry_contracts::iinitlens::IInitLens;
+use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
 
 const BACKEND_API: &str = "https://index.init.capital/positions/positions";
 const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
@@ -32,36 +33,72 @@ pub struct Position {
     pub collateral_pool_tokens: Vec<Address>,
 }
 
-pub async fn get_active_position_ids() -> Result<Vec<U256>, Box<dyn std::error::Error>> {
-    let resp: RawPositions = reqwest::get(BACKEND_API).await?.json::<RawPositions>().await?;
+use thiserror::Error;
+use tracing::{debug, error, info};
 
-    let mut filtered_position_ids = Vec::<U256>::new();
+#[derive(Error, Debug)]
+pub enum PositionError {
+    #[error("API request failed: {0}")]
+    RequestError(#[from] reqwest::Error),
+
+    #[error("Failed to parse position ID: {0}")]
+    ParseError(#[from] std::num::ParseIntError),
+
+    #[error("API returned unexpected status code: {0}")]
+    UnexpectedStatus(u32),
+}
+
+pub async fn get_active_position_ids() -> Result<Vec<U256>, PositionError> {
+    println!("Fetching active positions from {}", BACKEND_API);
+
+    let resp = reqwest::get(BACKEND_API).await?.json::<RawPositions>().await?;
 
     if resp.status_code != 200 {
-        println!("something wrong")
-    };
-
-    for (key, value) in resp.data.iter() {
-        let pos = Position {
-            pos_id: key.parse::<U256>()?,
-            borrow_pool_tokens: value
-                .borrow_pool_tokens
-                .keys()
-                .map(|x| x.parse::<Address>().unwrap())
-                .collect::<Vec<Address>>(),
-            collateral_pool_tokens: value
-                .collateral_pool_tokens
-                .keys()
-                .map(|x| x.parse::<Address>().unwrap())
-                .collect::<Vec<Address>>(),
-        };
-        // filtered only active position, add the position id to the list
-        if !pos.borrow_pool_tokens.is_empty() && !pos.collateral_pool_tokens.is_empty() {
-            filtered_position_ids.push(pos.pos_id)
-        };
+        error!("API returned non-200 status code: {}", resp.status_code);
+        return Err(PositionError::UnexpectedStatus(resp.status_code));
     }
 
-    // println!("{:#?}", filtered_position_ids);
+    let filtered_position_ids: Vec<U256> = resp
+        .data
+        .iter()
+        .filter_map(|(key, value)| {
+            let pos_id = match key.parse::<U256>() {
+                Ok(id) => id,
+                Err(e) => {
+                    error!("Failed to parse position ID {}: {}", key, e);
+                    return None;
+                }
+            };
+
+            let position = Position {
+                pos_id,
+                borrow_pool_tokens: value
+                    .borrow_pool_tokens
+                    .keys()
+                    .filter_map(|x| x.parse::<Address>().ok())
+                    .collect(),
+                collateral_pool_tokens: value
+                    .collateral_pool_tokens
+                    .keys()
+                    .filter_map(|x| x.parse::<Address>().ok())
+                    .collect(),
+            };
+
+            if !position.borrow_pool_tokens.is_empty()
+                && !position.collateral_pool_tokens.is_empty()
+            {
+                Some(position.pos_id)
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    println!(
+        "Found {} active positions from {} positions.",
+        filtered_position_ids.len(),
+        resp.data.len()
+    );
     Ok(filtered_position_ids)
 }
 
@@ -70,231 +107,45 @@ pub async fn get_init_pos_infos<
     P: Provider<T, N>,
     N: Network,
 >(
-    provider: &P,
+    // provider: &P,
+    init_lens: IInitLensInstance<T, P, N>,
     pos_ids: Vec<U256>,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
-    println!("F");
-    // init lens instance
-    let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
-
-    let builder = init_lens.getInitPosInfos(pos_ids);
-
-    // call
-    let data = builder.call().await?;
-
-    // destruct return data
-    let pos_infos = data.posInfos;
+    let pos_infos = init_lens.getInitPosInfos(pos_ids).call().await?.posInfos;
     Ok(pos_infos)
 }
 
 pub async fn get_int_pos_infos_chunk<
     T: Transport + ::core::clone::Clone,
-    P: Provider<T, N> + 'static  + ::core::clone::Clone,
+    P: Provider<T, N> + 'static + ::core::clone::Clone,
     N: Network,
 >(
     provider: P,
     pos_ids: Vec<U256>,
-    chunks: usize,
+    chunk_size: usize,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
-    // Divide position ids to chunks.
-    let chunks = pos_ids.chunks(chunks);
-    // Define maximum number of parallel requests.
-    let semaphore = Arc::new(Semaphore::new(1));
-    // Spawn many tasks that will send requests.
-    let mut jhs = Vec::new();
-    for chunk in chunks {
-        let semaphore = semaphore.clone();
-        let provider = provider.clone();
-        let chunk_vec = chunk.to_vec();
-        println!("A");
-        let jh = tokio::spawn(async move{
-            // Acquire permit before sending request.
-            let _permit = semaphore.acquire().await.unwrap();
-            println!("B");
-            // Send the tx.
-            let response = get_init_pos_infos(&provider, chunk_vec).await;
-            // Drop the permit after the request has been sent.
-            drop(_permit);
-            println!("C");
-            // Handle response.
-            response.unwrap()
-        });
-        jhs.push(jh);
-    }
+    let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
+    let semaphore = Arc::new(Semaphore::new(2));
+    let results = futures::stream::iter(pos_ids.chunks(chunk_size))
+        .map(|chunk| {
+            let semaphore = Arc::clone(&semaphore);
+            let init_lens_copy = init_lens.clone();
+            let chunk_vec = chunk.to_vec();
 
-    // Collect responses from tasks.
-    let mut responses = Vec::new();
-    for jh in jhs{
-        println!("D");
-        let response = jh.await.unwrap();
-        println!("E");
-        responses.push(response);
-    }
-   let flattened_responses = responses.into_iter().flatten().collect::<Vec<IInitLens::PosInfo>>();
-    Ok(flattened_responses)
+            async move {
+                let _permit = semaphore.acquire().await?;
+                let result = get_init_pos_infos(init_lens_copy, chunk_vec).await;
+                drop(_permit);
+                result
+            }
+        })
+        .buffer_unordered(2) // Process up to 2 concurrent requests
+        .collect::<Vec<Result<Vec<IInitLens::PosInfo>, _>>>()
+        .await;
+
+    // Combine all results, propagating any errors
+    let flattened: Vec<IInitLens::PosInfo> =
+        results.into_iter().collect::<Result<Vec<_>, _>>()?.into_iter().flatten().collect();
+
+    Ok(flattened)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
