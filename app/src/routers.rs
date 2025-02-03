@@ -91,7 +91,8 @@ static METH_PAIRS: Map<&'static str, &'static str> = phf_map! {
     WBTC => MOE_LB_ROUTER_V2,
     FBTC => AGNI_ROUTER,
     USDE => MOE_LB_ROUTER_V2,
-    CMETH => AGNI_ROUTER
+    CMETH => AGNI_ROUTER,
+    USDY => AGNI_ROUTER,
 };
 
 static USDY_PAIRS: Map<&'static str, &'static str> = phf_map! {
@@ -104,6 +105,7 @@ static USDY_PAIRS: Map<&'static str, &'static str> = phf_map! {
     FBTC => AGNI_ROUTER,
     USDE => MOE_LB_ROUTER_V2,
     CMETH => AGNI_ROUTER,
+    METH => AGNI_ROUTER,
 };
 
 static USDE_PAIRS: Map<&'static str, &'static str> = phf_map! {
