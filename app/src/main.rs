@@ -2,7 +2,9 @@ use alloy::providers::ProviderBuilder;
 use eyre::Result;
 use reqwest::Url;
 
+mod addresses;
 mod positions;
+mod routers;
 
 const RPC_URL: &str = "https://rpc.mantle.xyz";
 
