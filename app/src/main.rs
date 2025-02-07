@@ -39,7 +39,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     let wallet = EthereumWallet::from(signer);
 
     // let wallet = WalletProvider::new().with_signer(signer).on_http(url);
-    let provider = ProviderBuilder::new().with_recommended_fillers().wallet(wallet).on_http(url);
+    let provider = ProviderBuilder::new().wallet(wallet).on_http(url);
 
     // get unhealth-active position infos
     let pos = positions::get_or_fetch_active_positions().await?;
