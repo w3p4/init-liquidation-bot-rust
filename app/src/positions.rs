@@ -3,7 +3,9 @@ use redis::Commands;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::sync::Arc;
+use thiserror::Error;
 use tokio::sync::Semaphore;
+use tracing::error;
 
 use alloy::{
     contract::private::{Network, Provider, Transport},
@@ -11,16 +13,6 @@ use alloy::{
 };
 
 use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
-
-const BACKEND_API: &str = "https://index.init.capital/positions/positions";
-const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
-const _INIT_CORE: &str = "0x972BcB0284cca0152527c4f70f8F689852bCAFc5";
-const _POS_MANAGER: &str = "0x0e7401707CD08c03CDb53DAEF3295DDFb68BBa92";
-const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
-const ONE_E18: f64 = 1e18;
-const CONCURRENT: usize = 10;
-const REDIS_KEY: &str = "init-liquidation-bot";
-const CACHE_TIME: u64 = 60 * 30; // 30 minutes;
 
 #[derive(Deserialize)]
 pub struct RawData {
@@ -41,8 +33,15 @@ pub struct Position {
     pub collateral_pool_tokens: Vec<Address>,
 }
 
-use thiserror::Error;
-use tracing::error;
+const BACKEND_API: &str = "https://index.init.capital/positions/positions";
+const INIT_LENS_ADDRESS: &str = "0x4403F4296BeF042a08785077D67F4700478800C5";
+const _INIT_CORE: &str = "0x972BcB0284cca0152527c4f70f8F689852bCAFc5";
+const _POS_MANAGER: &str = "0x0e7401707CD08c03CDb53DAEF3295DDFb68BBa92";
+const _SWAP_DATA_REGISTRY: &str = "0x94670598E98f8DAd95D85932dD85CBD050CE1402";
+const ONE_E18: f64 = 1e18;
+const CONCURRENT: usize = 10;
+const REDIS_KEY: &str = "init-liquidation-bot";
+const CACHE_TIME: u64 = 60 * 30; // 30 minutes;
 
 #[derive(Error, Debug)]
 pub enum PositionError {

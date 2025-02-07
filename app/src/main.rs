@@ -1,5 +1,11 @@
+use alloy::{
+    network::EthereumWallet, primitives::U256, providers::ProviderBuilder,
+    signers::local::PrivateKeySigner,
+};
+use dotenv::dotenv;
 use eyre::Result;
 use reqwest::Url;
+use std::env;
 
 mod addresses;
 mod liquidation;
@@ -8,13 +14,6 @@ mod routers;
 mod tokens;
 
 const RPC_URL: &str = "https://rpc.mantle.xyz";
-
-use alloy::{
-    network::EthereumWallet, primitives::U256, providers::ProviderBuilder,
-    signers::local::PrivateKeySigner,
-};
-use dotenv::dotenv;
-use std::env;
 
 #[tokio::main]
 async fn main() {
