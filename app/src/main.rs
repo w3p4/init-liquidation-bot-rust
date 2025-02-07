@@ -2,10 +2,10 @@ use eyre::Result;
 use reqwest::Url;
 
 mod addresses;
+mod liquidation;
 mod positions;
 mod routers;
 mod tokens;
-mod utils;
 
 const RPC_URL: &str = "https://rpc.mantle.xyz";
 
@@ -17,7 +17,19 @@ use dotenv::dotenv;
 use std::env;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() {
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 1 && args[1] == "loop" {
+        println!("loop!");
+        loop {
+            let _ = fetch_and_liquidate().await;
+        }
+    } else {
+        let _ = fetch_and_liquidate().await;
+    }
+}
+
+async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok(); // Reads the .env file
     let private_key = env::var("PRIVATE_KEY").expect("PRIVATE_KEY must be set");
     let profit = env::var("PROFIT").expect("PROFIT must be set");
@@ -44,7 +56,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // try to liquidate
     for (i, pos_id) in active_pos_ids.iter().enumerate() {
-        let result = utils::try_liquidate(provider.clone(), pos_id, &profit).await;
+        let result = liquidation::try_liquidate(provider.clone(), pos_id, &profit).await;
         match result {
             Ok(()) => succeed += 1,
             Err(_error) => failed += 1,
