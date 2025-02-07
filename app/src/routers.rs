@@ -1,149 +1,141 @@
-use phf::{phf_map, Map};
+use crate::addresses::*;
+use std::collections::HashMap;
 
-use crate::addresses::{
-    AGNI_ROUTER, CMETH, FBTC, FUSION_X_ROUTER, METH, MOE_LB_ROUTER_V2, USDC, USDE, USDT, USDY,
-    WETH, ZERO,
-};
+pub fn get_router_map() -> HashMap<&'static str, HashMap<&'static str, &'static str>> {
+    let usdc_map = HashMap::from([
+        (USDC, ZERO_ADDRESS),
+        (USDT, AGNI_ROUTER),
+        (WETH, AGNI_ROUTER),
+        (WMNT, MOE_LB_ROUTER_V2),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (METH, AGNI_ROUTER),
+        (USDE, MOE_LB_ROUTER_V2),
+        (FBTC, MOE_LB_ROUTER_V2),
+        (CMETH, AGNI_ROUTER),
+        (USDY, MOE_LB_ROUTER_V2),
+    ]);
+    let usdt_map = HashMap::from([
+        (USDT, ZERO_ADDRESS),
+        (USDC, AGNI_ROUTER),
+        (WETH, AGNI_ROUTER),
+        (WMNT, AGNI_ROUTER),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (METH, AGNI_ROUTER),
+        (USDE, MOE_LB_ROUTER_V2),
+        (FBTC, AGNI_ROUTER),
+        (CMETH, AGNI_ROUTER),
+        (USDY, AGNI_ROUTER),
+    ]);
+    let weth_map = HashMap::from([
+        (WETH, ZERO_ADDRESS),
+        (USDC, AGNI_ROUTER),
+        (USDT, AGNI_ROUTER),
+        (WMNT, AGNI_ROUTER),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (METH, AGNI_ROUTER),
+        (FBTC, AGNI_ROUTER),
+        (USDE, MOE_LB_ROUTER_V2),
+        (CMETH, AGNI_ROUTER),
+        (USDY, AGNI_ROUTER),
+    ]);
+    let wbtc_map = HashMap::from([
+        (WBTC, ZERO_ADDRESS),
+        (USDC, MOE_LB_ROUTER_V2),
+        (USDT, MOE_LB_ROUTER_V2),
+        (WETH, MOE_LB_ROUTER_V2),
+        (WMNT, MOE_LB_ROUTER_V2),
+        (METH, MOE_LB_ROUTER_V2),
+        (FBTC, MOE_LB_ROUTER_V2),
+        (USDE, MOE_LB_ROUTER_V2),
+        (CMETH, MOE_LB_ROUTER_V2),
+    ]);
+    let fbtc_map = HashMap::from([
+        (FBTC, ZERO_ADDRESS),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (USDC, MOE_LB_ROUTER_V2),
+        (USDT, AGNI_ROUTER),
+        (WETH, AGNI_ROUTER),
+        (WMNT, AGNI_ROUTER),
+        (METH, AGNI_ROUTER),
+        (USDY, AGNI_ROUTER),
+        (USDE, MOE_LB_ROUTER_V2),
+        (CMETH, MOE_LB_ROUTER_V2),
+    ]);
 
-static USDC_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    USDC => ZERO,
-    USDT => AGNI_ROUTER,
-    WETH => AGNI_ROUTER,
-    WMNT => MOE_LB_ROUTER_V2,
-    WBTC => MOE_LB_ROUTER_V2,
-    METH => AGNI_ROUTER
-    USDE => MOE_LB_ROUTER_V2,
-    FBTC => MOE_LB_ROUTER_V2,
-    CMETH => AGNI_ROUTER,
-    USDY => MOE_LB_ROUTER_V2,
-};
+    let wmnt_map = HashMap::from([
+        (WMNT, ZERO_ADDRESS),
+        (USDC, AGNI_ROUTER),
+        (USDT, AGNI_ROUTER),
+        (WETH, AGNI_ROUTER),
+        (METH, AGNI_ROUTER),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (FBTC, AGNI_ROUTER),
+        (USDE, MOE_LB_ROUTER_V2),
+        (CMETH, MOE_LB_ROUTER_V2),
+        (USDY, AGNI_ROUTER),
+    ]);
+    let meth_map = HashMap::from([
+        (METH, ZERO_ADDRESS),
+        (WETH, AGNI_ROUTER),
+        (USDC, AGNI_ROUTER),
+        (USDT, AGNI_ROUTER),
+        (WMNT, AGNI_ROUTER),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (FBTC, AGNI_ROUTER),
+        (USDE, MOE_LB_ROUTER_V2),
+        (CMETH, AGNI_ROUTER),
+        (USDY, AGNI_ROUTER),
+    ]);
 
-static USDT_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    USDT => ZERO,
-    USDC => AGNI_ROUTER,
-    WETH => AGNI_ROUTER,
-    WMNT => AGNI_ROUTER,
-    WBTC => MOE_LB_ROUTER_V2,
-    METH => AGNI_ROUTER,
-    USDE => MOE_LB_ROUTER_V2,
-    FBTC => AGNI_ROUTER,
-    CMETH => AGNI_ROUTER,
-    USDY => AGNI_ROUTER,
-};
+    let usdy_map = HashMap::from([
+        (USDY, ZERO_ADDRESS),
+        (WETH, FUSION_X_ROUTER),
+        (WBTC, FUSION_X_ROUTER),
+        (USDT, AGNI_ROUTER),
+        (USDC, AGNI_ROUTER),
+        (WMNT, AGNI_ROUTER),
+        (FBTC, AGNI_ROUTER),
+        (USDE, MOE_LB_ROUTER_V2),
+        (CMETH, AGNI_ROUTER),
+        (METH, AGNI_ROUTER),
+    ]);
 
-static WETH_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    WETH => ZERO,
-    USDC => AGNI_ROUTER,
-    USDT => AGNI_ROUTER,
-    WMNT => AGNI_ROUTER,
-    WBTC => MOE_LB_ROUTER_V2,
-    METH => AGNI_ROUTER,
-    USDE => MOE_LB_ROUTER_V2,
-    FBTC => AGNI_ROUTER,
-    CMETH => AGNI_ROUTER,
-    USDY => AGNI_ROUTER,
-};
+    let usde_map = HashMap::from([
+        (USDE, ZERO_ADDRESS),
+        (USDT, MOE_LB_ROUTER_V2),
+        (USDC, MOE_LB_ROUTER_V2),
+        (WETH, MOE_LB_ROUTER_V2),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (FBTC, MOE_LB_ROUTER_V2),
+        (WMNT, MOE_LB_ROUTER_V2),
+        (METH, MOE_LB_ROUTER_V2),
+        (USDY, MOE_LB_ROUTER_V2),
+        (CMETH, MOE_LB_ROUTER_V2),
+    ]);
 
-static WBTC_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    WBTC => ZERO,
-    USDC => MOE_LB_ROUTER_V2,
-    USDT => MOE_LB_ROUTER_V2,
-    WETH => MOE_LB_ROUTER_V2,
-    WMNT => MOE_LB_ROUTER_V2,
-    METH => MOE_LB_ROUTER_V2,
-    FBTC => MOE_LB_ROUTER_V2,
-    USDE => MOE_LB_ROUTER_V2,
-    CMETH => MOE_LB_ROUTER_V2,
-};
-
-static FBTC_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    FBTC => ZERO,
-    WBTC => MOE_LB_ROUTER_V2,
-    USDC => MOE_LB_ROUTER_V2,
-    USDT => AGNI_ROUTER,
-    WETH => AGNI_ROUTER,
-    WMNT => AGNI_ROUTER,
-    METH => AGNI_ROUTER,
-    USDY => AGNI_ROUTER,
-    USDE => MOE_LB_ROUTER_V2,
-    CMETH => MOE_LB_ROUTER_V2,
-};
-
-static WMNT_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    WMNT => ZERO,
-    USDC => AGNI_ROUTER,
-    USDT => AGNI_ROUTER,
-    WETH => AGNI_ROUTER,
-    METH => AGNI_ROUTER,
-    WBTC => MOE_LB_ROUTER_V2,
-    FBTC => AGNI_ROUTER,
-    USDE => MOE_LB_ROUTER_V2,
-    CMETH => AGNI_ROUTER,
-    USDY => AGNI_ROUTER,
-};
-
-static METH_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    METH => ZERO,
-    WETH => AGNI_ROUTER,
-    USDC => AGNI_ROUTER,
-    USDT => AGNI_ROUTER,
-    WMNT => AGNI_ROUTER,
-    WBTC => MOE_LB_ROUTER_V2,
-    FBTC => AGNI_ROUTER,
-    USDE => MOE_LB_ROUTER_V2,
-    CMETH => AGNI_ROUTER,
-    USDY => AGNI_ROUTER,
-};
-
-static USDY_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    USDY => ZERO,
-    WETH => FUSION_X_ROUTER,
-    WBTC => FUSION_X_ROUTER,
-    USDT => AGNI_ROUTER,
-    USDC => AGNI_ROUTER,
-    WMNT => AGNI_ROUTER,
-    FBTC => AGNI_ROUTER,
-    USDE => MOE_LB_ROUTER_V2,
-    CMETH => AGNI_ROUTER,
-    METH => AGNI_ROUTER,
-};
-
-static USDE_PAIRS: Map<&'static str, &'static str> = phf_map! {
-    USDE => ZERO,
-    USDT => MOE_LB_ROUTER_V2,
-    USDC => MOE_LB_ROUTER_V2,
-    WETH => MOE_LB_ROUTER_V2,
-    WBTC => MOE_LB_ROUTER_V2,
-    FBTC => MOE_LB_ROUTER_V2,
-    WMNT => MOE_LB_ROUTER_V2,
-    METH => MOE_LB_ROUTER_V2,
-    USDY => MOE_LB_ROUTER_V2,
-    CMETH => MOE_LB_ROUTER_V2,
-};
-
-static CMETH_PAIRS: Map<&'static str, &'static str> = phf_map! {
-     CMETH => ZERO,
-     WETH => MOE_LB_ROUTER_V2,
-     WBTC => MOE_LB_ROUTER_V2,
-     USDT => AGNI_ROUTER,
-     USDC => AGNI_ROUTER,
-     WMNT => MOE_LB_ROUTER_V2,
-     METH => AGNI_ROUTER,
-     FBTC => MOE_LB_ROUTER_V2,
-     USDE => MOE_LB_ROUTER_V2,
-     USDY => AGNI_ROUTER,
-};
-
-/// The best router mapping for each token pair
-pub static BEST_ROUTER: Map<&'static str, &'static Map<&'static str, &'static str>> = phf_map! {
-    USDC => &USDC_PAIRS,
-    USDT => &USDT_PAIRS,
-    WETH => &WETH_PAIRS,
-    WBTC => &WBTC_PAIRS,
-    FBTC => &FBTC_PAIRS,
-    WMNT => &WMNT_PAIRS,
-    METH => &METH_PAIRS,
-    USDY => &USDY_PAIRS,
-    USDE => &USDE_PAIRS,
-    CMETH => &CMETH_PAIRS,
-};
+    let cmeth_map = HashMap::from([
+        (CMETH, ZERO_ADDRESS),
+        (WETH, MOE_LB_ROUTER_V2),
+        (WBTC, MOE_LB_ROUTER_V2),
+        (USDT, AGNI_ROUTER),
+        (USDC, AGNI_ROUTER),
+        (WMNT, MOE_LB_ROUTER_V2),
+        (METH, AGNI_ROUTER),
+        (FBTC, MOE_LB_ROUTER_V2),
+        (USDE, MOE_LB_ROUTER_V2),
+        (USDY, AGNI_ROUTER),
+    ]);
+    let router_map = HashMap::from([
+        (USDC, usdc_map),
+        (USDT, usdt_map),
+        (WETH, weth_map),
+        (WBTC, wbtc_map),
+        (FBTC, fbtc_map),
+        (WMNT, wmnt_map),
+        (METH, meth_map),
+        (USDY, usdy_map),
+        (USDE, usde_map),
+        (CMETH, cmeth_map),
+    ]);
+    router_map
+}

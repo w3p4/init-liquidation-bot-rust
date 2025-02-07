@@ -18,7 +18,7 @@ bindings:
 	rm -rf $(BINDINGS_OUT_PATH)
 
 # Generate new bindings
-	@forge bind --alloy --root $(CONTRACTS_PATH) --crate-name $(CRATE_NAME)
+	@forge bind --root $(CONTRACTS_PATH) --crate-name $(CRATE_NAME)
 
 # Move bindings to the correct location
 	@mv -f $(BINDINGS_OUT_PATH) $(CRATES_FOLDER)
