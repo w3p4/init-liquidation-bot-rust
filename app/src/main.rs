@@ -4,6 +4,7 @@ use alloy::{
     providers::ProviderBuilder,
     signers::local::{coins_bip39::English, MnemonicBuilder},
 };
+use std::time::Duration;
 
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
@@ -70,16 +71,20 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     let failed = Arc::new(AtomicU32::new(0));
 
     let semaphore = Arc::new(Semaphore::new(signer_number));
+    let pos_ids_chunks = active_pos_ids.chunks(signer_number);
 
-    let result = futures::stream::iter(active_pos_ids.chunks(signer_number))
+    let result = futures::stream::iter(pos_ids_chunks)
         .enumerate()
         .map(async |(_, chunk)| {
             let semaphore = Arc::clone(&semaphore);
-            let _permit = semaphore.acquire().await?;
 
-            let futures = chunk.iter().enumerate().map(|(i, pos_id)| {
+            let futures = chunk.iter().enumerate().map(async |(i, pos_id)| {
                 let provider = providers[i % providers.len()].clone();
-                liquidation::try_liquidate(provider, pos_id, &profit)
+                let permit = semaphore.acquire().await.unwrap();
+                let result = liquidation::try_liquidate(provider, pos_id, &profit).await;
+                tokio::time::sleep(Duration::from_millis(200)).await;
+                drop(permit);
+                result
             });
 
             let results = future::join_all(futures).await;
@@ -89,7 +94,8 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
                     Ok(()) => {
                         succeed.fetch_add(1, Ordering::SeqCst);
                     }
-                    Err(_) => {
+                    Err(_e) => {
+                        // println!("Error: {:?}", e);
                         failed.fetch_add(1, Ordering::SeqCst);
                     }
                 };
@@ -98,7 +104,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
             print!("liquidated chunk, succeed: {:?}, failed: {:?}\r", succeed, failed);
             Ok::<(), Box<dyn std::error::Error>>(())
         })
-        .buffer_unordered(4)
+        .buffer_unordered(signer_number)
         .collect::<Vec<_>>()
         .await;
     println!("liquidated all positions, succeed: {:?}, failed: {:?}", succeed, failed);
