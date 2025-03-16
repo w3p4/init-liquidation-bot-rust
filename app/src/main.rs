@@ -5,8 +5,8 @@ use alloy::{
     signers::local::{coins_bip39::English, MnemonicBuilder},
 };
 
-use dotenv::dotenv;
 use eyre::Result;
+use futures::future;
 use std::env;
 
 mod addresses;
@@ -31,22 +31,29 @@ async fn main() {
 }
 
 async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
-    dotenv().ok(); // Reads the .env file
     let phrase = env::var("PHRASE").expect("PHRASE must be set");
     let profit = env::var("PROFIT").expect("PROFIT must be set");
+    let signer_number = env::var("SIGNER_NUMBER").expect("SIGNER_NUMBER must be set");
 
-    // Instantiate a signer.
+    // Instantiate a mnemonic signer.
     let mnemonic_signers = MnemonicBuilder::<English>::default().phrase(phrase);
-    let mnemonic_signer_0 = mnemonic_signers.index(0)?.build()?;
-    // let mnemonic_signer_1 = mnemonic_signers.index(1)?.build()?;
-    // let mnemonic_signer_2 = mnemonic_signers.index(2)?.build()?;
-    let wallet_0 = EthereumWallet::from(mnemonic_signer_0);
 
-    let provider = ProviderBuilder::new().wallet(wallet_0).connect(RPC_URL).await?;
+    // create wallet providers
+    let mut wallets: Vec<EthereumWallet> = Vec::new();
+    for i in 0..signer_number.parse::<u32>().unwrap() {
+        let mnemonic_signer = mnemonic_signers.clone().index(i)?.build()?;
+        let wallet = EthereumWallet::from(mnemonic_signer);
+        wallets.push(wallet);
+    }
+    let providers = future::try_join_all(
+        wallets.iter().map(|w| ProviderBuilder::new().wallet(w.clone()).connect(RPC_URL)),
+    )
+    .await?;
 
     // get unhealth-active position infos
     let pos = positions::get_or_fetch_active_positions().await?;
-    let pos_infos = positions::get_int_pos_infos_chunk(provider.clone(), pos.clone(), 150).await?;
+    let pos_infos =
+        positions::get_int_pos_infos_chunk(providers[0].clone(), pos.clone(), 150).await?;
 
     // logs
     let len = &pos_infos.len();
@@ -59,7 +66,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     // try to liquidate
     // TODO: use 3 wallets to liquidate
     for (i, pos_id) in active_pos_ids.iter().enumerate() {
-        let result = liquidation::try_liquidate(provider.clone(), pos_id, &profit).await;
+        let result = liquidation::try_liquidate(providers[0].clone(), pos_id, &profit).await;
         match result {
             Ok(()) => succeed += 1,
             Err(_error) => failed += 1,
