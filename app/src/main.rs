@@ -82,7 +82,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
                 let provider = providers[i % providers.len()].clone();
                 let permit = semaphore.acquire().await.unwrap();
                 let result = liquidation::try_liquidate(provider, pos_id, &profit).await;
-                tokio::time::sleep(Duration::from_millis(200)).await;
+                tokio::time::sleep(Duration::from_millis(150)).await;
                 drop(permit);
                 result
             });
@@ -95,7 +95,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
                         succeed.fetch_add(1, Ordering::SeqCst);
                     }
                     Err(_e) => {
-                        // println!("Error: {:?}", e);
+                        // println!("Error: {:?}", _e);
                         failed.fetch_add(1, Ordering::SeqCst);
                     }
                 };
