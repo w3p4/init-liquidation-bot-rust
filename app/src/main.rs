@@ -1,10 +1,12 @@
 use alloy::{
-    network::EthereumWallet, primitives::U256, providers::ProviderBuilder,
-    signers::local::PrivateKeySigner,
+    network::EthereumWallet,
+    primitives::U256,
+    providers::ProviderBuilder,
+    signers::local::{coins_bip39::English, MnemonicBuilder},
 };
+
 use dotenv::dotenv;
 use eyre::Result;
-use reqwest::Url;
 use std::env;
 
 mod addresses;
@@ -30,16 +32,17 @@ async fn main() {
 
 async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok(); // Reads the .env file
-    let private_key = env::var("PRIVATE_KEY").expect("PRIVATE_KEY must be set");
+    let phrase = env::var("PHRASE").expect("PHRASE must be set");
     let profit = env::var("PROFIT").expect("PROFIT must be set");
 
-    let url = Url::parse(RPC_URL)?;
     // Instantiate a signer.
-    let signer: PrivateKeySigner = private_key.parse().expect("should parse private key");
-    let wallet = EthereumWallet::from(signer);
+    let mnemonic_signers = MnemonicBuilder::<English>::default().phrase(phrase);
+    let mnemonic_signer_0 = mnemonic_signers.index(0)?.build()?;
+    // let mnemonic_signer_1 = mnemonic_signers.index(1)?.build()?;
+    // let mnemonic_signer_2 = mnemonic_signers.index(2)?.build()?;
+    let wallet_0 = EthereumWallet::from(mnemonic_signer_0);
 
-    // let wallet = WalletProvider::new().with_signer(signer).on_http(url);
-    let provider = ProviderBuilder::new().wallet(wallet).on_http(url);
+    let provider = ProviderBuilder::new().wallet(wallet_0).connect(RPC_URL).await?;
 
     // get unhealth-active position infos
     let pos = positions::get_or_fetch_active_positions().await?;
@@ -54,6 +57,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     let mut failed = 0;
 
     // try to liquidate
+    // TODO: use 3 wallets to liquidate
     for (i, pos_id) in active_pos_ids.iter().enumerate() {
         let result = liquidation::try_liquidate(provider.clone(), pos_id, &profit).await;
         match result {

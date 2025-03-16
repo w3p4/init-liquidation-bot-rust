@@ -14,14 +14,15 @@ const LIQUIDATION_BOT: &str = "0x47dcA5d272b46A578F94e343983d0C9A43C6AdEf";
 
 async fn get_best_liquidation<
     T: Transport + ::core::clone::Clone,
-    P: Provider<T, N> + 'static + ::core::clone::Clone,
+    P: alloy::contract::private::Provider<T, N> + 'static + core::clone::Clone,
     N: Network,
+    // P: alloy::contract::private::Provider<T, N> + ::core::clone::Clone,
 >(
-    provider: P,
+    provider: &P,
     pos_id: &U256,
 ) -> Result<getLiquidationInfoReturn, Box<dyn std::error::Error>> {
     let liq_bot_address = LIQUIDATION_BOT.parse::<Address>()?;
-    let liq_bot = IERC20LiquidationBot::new(liq_bot_address, provider.clone());
+    let liq_bot = IERC20LiquidationBot::new(liq_bot_address, provider);
     let liq_info = liq_bot.getLiquidationInfo(*pos_id).call().await?;
     Ok(liq_info)
 }
@@ -36,7 +37,7 @@ pub async fn try_liquidate<
     profit: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // get best pool to repay, best pool to out
-    let liq_info = get_best_liquidation(provider.clone(), pos_id).await?;
+    let liq_info = get_best_liquidation(&provider, pos_id).await?;
     let repay_pool = liq_info.bestPoolToRepay.to_string();
     let coll_pool = liq_info.bestPoolOut.to_string();
 

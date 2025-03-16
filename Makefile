@@ -4,24 +4,18 @@
 default: build
 
 # Define variables
+ALLOY_VERSION=v0.12.0
 CARGO=cargo
 CRATES_FOLDER=crates
-CONTRACTS_PATH=./contracts
+CONTRACTS_PATH=contracts
 BINDINGS_FOLDER=bindings
-CRATE_NAME=foundry-contracts
 BINDINGS_CRATES_FOLDER=$(CRATES_FOLDER)/$(BINDINGS_FOLDER)
-BINDINGS_OUT_PATH=$(CONTRACTS_PATH)/out/$(BINDINGS_FOLDER)
 
 # Target for generating bindings
 bindings:
 	rm -rf $(BINDINGS_CRATES_FOLDER)
-	rm -rf $(BINDINGS_OUT_PATH)
-
 # Generate new bindings
-	@forge bind --root $(CONTRACTS_PATH) --crate-name $(CRATE_NAME)
-
-# Move bindings to the correct location
-	@mv -f $(BINDINGS_OUT_PATH) $(CRATES_FOLDER)
+	@forge bind --alloy-version $(ALLOY_VERSION) --root $(CONTRACTS_PATH) -b $(BINDINGS_CRATES_FOLDER) --force
 
 # Target for building the project
 build: bindings
