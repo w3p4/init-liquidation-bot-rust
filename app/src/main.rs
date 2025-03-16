@@ -5,8 +5,13 @@ use alloy::{
     signers::local::{coins_bip39::English, MnemonicBuilder},
 };
 
+use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::Arc;
+use tokio::sync::Semaphore;
+
 use eyre::Result;
-use futures::future;
+use futures::{future, StreamExt};
+
 use std::env;
 
 mod addresses;
@@ -33,15 +38,16 @@ async fn main() {
 async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     let phrase = env::var("PHRASE").expect("PHRASE must be set");
     let profit = env::var("PROFIT").expect("PROFIT must be set");
-    let signer_number = env::var("SIGNER_NUMBER").expect("SIGNER_NUMBER must be set");
+    let signer_number =
+        env::var("SIGNER_NUMBER").expect("SIGNER_NUMBER must be set").parse::<usize>().unwrap();
 
     // Instantiate a mnemonic signer.
     let mnemonic_signers = MnemonicBuilder::<English>::default().phrase(phrase);
 
     // create wallet providers
     let mut wallets: Vec<EthereumWallet> = Vec::new();
-    for i in 0..signer_number.parse::<u32>().unwrap() {
-        let mnemonic_signer = mnemonic_signers.clone().index(i)?.build()?;
+    for i in 0..signer_number {
+        let mnemonic_signer = mnemonic_signers.clone().index(i as u32)?.build()?;
         let wallet = EthereumWallet::from(mnemonic_signer);
         wallets.push(wallet);
     }
@@ -60,18 +66,42 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     println!("Unhealthy position: {len}");
     let active_pos_ids = pos_infos.iter().map(|pos| pos.posId).collect::<Vec<U256>>();
 
-    let mut succeed = 0;
-    let mut failed = 0;
+    let succeed = Arc::new(AtomicU32::new(0));
+    let failed = Arc::new(AtomicU32::new(0));
 
-    // try to liquidate
-    // TODO: use 3 wallets to liquidate
-    for (i, pos_id) in active_pos_ids.iter().enumerate() {
-        let result = liquidation::try_liquidate(providers[0].clone(), pos_id, &profit).await;
-        match result {
-            Ok(()) => succeed += 1,
-            Err(_error) => failed += 1,
-        };
-        print!("liquidated {}/{}, succeed: {}, failed: {}\r", i, len, succeed, failed);
-    }
+    let semaphore = Arc::new(Semaphore::new(signer_number));
+
+    let result = futures::stream::iter(active_pos_ids.chunks(signer_number))
+        .enumerate()
+        .map(async |(_, chunk)| {
+            let semaphore = Arc::clone(&semaphore);
+            let _permit = semaphore.acquire().await?;
+
+            let futures = chunk.iter().enumerate().map(|(i, pos_id)| {
+                let provider = providers[i % providers.len()].clone();
+                liquidation::try_liquidate(provider, pos_id, &profit)
+            });
+
+            let results = future::join_all(futures).await;
+
+            for result in results {
+                match result {
+                    Ok(()) => {
+                        succeed.fetch_add(1, Ordering::SeqCst);
+                    }
+                    Err(_) => {
+                        failed.fetch_add(1, Ordering::SeqCst);
+                    }
+                };
+            }
+
+            print!("liquidated chunk, succeed: {:?}, failed: {:?}\r", succeed, failed);
+            Ok::<(), Box<dyn std::error::Error>>(())
+        })
+        .buffer_unordered(4)
+        .collect::<Vec<_>>()
+        .await;
+    println!("liquidated all positions, succeed: {:?}, failed: {:?}", succeed, failed);
+
     Ok(())
 }
