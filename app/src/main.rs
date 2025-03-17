@@ -102,13 +102,15 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
                 };
             }
 
-            print!("liquidated chunk, succeed: {:?}, failed: {:?}\r", succeed, failed);
+            print!(
+                "liquidating to {} positions , succeed: {:?}, failed: {:?}",
+                len, succeed, failed
+            );
             Ok::<(), Box<dyn std::error::Error>>(())
         })
         .buffer_unordered(signer_number)
         .collect::<Vec<_>>()
         .await;
-    println!("liquidated all positions, succeed: {:?}, failed: {:?}", succeed, failed);
 
     Ok(())
 }

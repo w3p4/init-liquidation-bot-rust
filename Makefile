@@ -4,7 +4,7 @@
 default: build
 
 # Define variables
-ALLOY_VERSION=v0.12.0
+ALLOY_VERSION=0.12.0
 CARGO=cargo
 CRATES_FOLDER=crates
 CONTRACTS_PATH=contracts
