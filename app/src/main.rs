@@ -74,7 +74,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     let semaphore = Arc::new(Semaphore::new(signer_number));
     let pos_ids_chunks = active_pos_ids.chunks(signer_number);
 
-    let result = futures::stream::iter(pos_ids_chunks)
+    let _result = futures::stream::iter(pos_ids_chunks)
         .enumerate()
         .map(async |(_, chunk)| {
             let semaphore = Arc::clone(&semaphore);
