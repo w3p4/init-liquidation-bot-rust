@@ -65,7 +65,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
 
     // logs
     let len = &pos_infos.len();
-    println!("Unhealthy position: {len}");
+    println!("Total Unhealthy Position: {len}");
     let active_pos_ids = pos_infos.iter().map(|pos| pos.posId).collect::<Vec<U256>>();
 
     let succeed = Arc::new(AtomicU32::new(0));
@@ -74,16 +74,19 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     let semaphore = Arc::new(Semaphore::new(signer_number));
     let pos_ids_chunks = active_pos_ids.chunks(signer_number);
 
-    let _result = futures::stream::iter(pos_ids_chunks)
+    let result = futures::stream::iter(pos_ids_chunks)
         .enumerate()
         .map(async |(_, chunk)| {
             let semaphore = Arc::clone(&semaphore);
 
             let futures = chunk.iter().enumerate().map(async |(i, pos_id)| {
                 let provider = providers[i % providers.len()].clone();
+                // get permit
                 let permit = semaphore.acquire().await.unwrap();
                 let result = liquidation::try_liquidate(provider, pos_id, &profit).await;
+                // delay after each liquidation
                 tokio::time::sleep(Duration::from_millis(delay_time)).await;
+                // drop permit
                 drop(permit);
                 result
             });
@@ -95,22 +98,21 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
                     Ok(()) => {
                         succeed.fetch_add(1, Ordering::SeqCst);
                     }
-                    Err(_e) => {
-                        // println!("Error: {:?}", _e);
+                    Err(e) => {
+                        // log error
+                        println!("Error: {e}");
                         failed.fetch_add(1, Ordering::SeqCst);
                     }
                 };
             }
 
-            print!(
-                "liquidating to {} positions , succeed: {:?}, failed: {:?}",
-                len, succeed, failed
-            );
             Ok::<(), Box<dyn std::error::Error>>(())
         })
-        .buffer_unordered(signer_number)
-        .collect::<Vec<_>>()
-        .await;
+        .buffer_unordered(signer_number);
+
+    // collect results and print the outcome
+    result.collect::<Vec<_>>().await;
+    println!("liquidated {len} positions , succeed: {:?}, failed: {:?}", succeed, failed);
 
     Ok(())
 }
