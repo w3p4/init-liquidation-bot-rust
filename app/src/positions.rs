@@ -143,14 +143,14 @@ pub async fn get_init_pos_infos<
 
 pub async fn get_int_pos_infos_chunk<
     T: Transport + ::core::clone::Clone,
-    P: Provider<T, N> + 'static + ::core::clone::Clone,
+    P: Provider<T, N> + ::core::clone::Clone,
     N: Network,
 >(
     provider: P,
     pos_ids: Vec<U256>,
     chunk_size: usize,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
-    let init_lens = IInitLens::new(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
+    let init_lens = IInitLens::new::<T, P, N>(INIT_LENS_ADDRESS.parse::<Address>()?, provider);
     let semaphore = Arc::new(Semaphore::new(CONCURRENT));
     let results = futures::stream::iter(pos_ids.chunks(chunk_size))
         .map(|chunk| {

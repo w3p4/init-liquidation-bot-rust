@@ -37,6 +37,7 @@ async fn main() {
 }
 
 async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
+    let delay_time = env::var("DELAY").expect("DELAY must be set").parse::<u64>().unwrap();
     let phrase = env::var("PHRASE").expect("PHRASE must be set");
     let profit = env::var("PROFIT").expect("PROFIT must be set");
     let signer_number =
@@ -82,7 +83,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
                 let provider = providers[i % providers.len()].clone();
                 let permit = semaphore.acquire().await.unwrap();
                 let result = liquidation::try_liquidate(provider, pos_id, &profit).await;
-                tokio::time::sleep(Duration::from_millis(150)).await;
+                tokio::time::sleep(Duration::from_millis(delay_time)).await;
                 drop(permit);
                 result
             });
