@@ -12,7 +12,7 @@ use alloy::{
     primitives::{Address, U256},
 };
 
-use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance};
+use foundry_contracts::iinitlens::IInitLens::{self, IInitLensInstance, PosInfo};
 
 #[derive(Deserialize)]
 pub struct RawData {
@@ -135,7 +135,21 @@ pub async fn get_init_pos_infos<
     init_lens: IInitLensInstance<T, P, N>,
     pos_ids: Vec<U256>,
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
-    let pos_infos = init_lens.getInitPosInfos(pos_ids).call().await?.posInfos;
+    let pos_infos_return = init_lens.getInitPosInfos(pos_ids).call().await;
+
+    let mut pos_infos:Vec<PosInfo>= vec![];
+    
+    match pos_infos_return {
+        Ok(r) => {
+            pos_infos = r.posInfos
+        }
+        Err(e) => {
+            // log error
+            println!("Error: {e}");
+        }
+    }
+
+    // println!("info {:?}",pos_infos[0].mode);
     let filtered_pos_infos =
         pos_infos.iter().filter(|pos_info| filter_low_health(pos_info)).cloned().collect();
     Ok(filtered_pos_infos)
@@ -182,3 +196,41 @@ fn filter_low_health(pos_info: &IInitLens::PosInfo) -> bool {
     let is_greater_low_health = pos_info.health_e18 > low_health;
     is_below_one && is_greater_low_health
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
