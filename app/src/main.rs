@@ -21,7 +21,7 @@ mod positions;
 mod routers;
 mod tokens;
 
-const RPC_URL: &str = "https://rpc.mantle.xyz";
+const RPC_URL: &str = "https://mantle-mainnet.public.blastapi.io";
 
 #[tokio::main]
 async fn main() {
@@ -61,7 +61,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     // get unhealth-active position infos
     let pos = positions::get_or_fetch_active_positions().await?;
     let pos_infos =
-        positions::get_int_pos_infos_chunk(providers[0].clone(), pos.clone(), 150).await?;
+        positions::get_int_pos_infos_chunk(providers[0].clone(), pos.clone(), 200).await?;
 
     // logs
     let len = &pos_infos.len();
