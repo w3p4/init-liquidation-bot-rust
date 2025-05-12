@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  init-liq-bot:
+    container_name: init-liq-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ["redis-server"]

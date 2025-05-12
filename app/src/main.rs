@@ -58,6 +58,7 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
     )
     .await?;
 
+    println!("Get or fetch active positions...");
     // get unhealth-active position infos
     let pos = positions::get_or_fetch_active_positions().await?;
     let pos_infos =
@@ -116,55 +117,3 @@ async fn fetch_and_liquidate() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

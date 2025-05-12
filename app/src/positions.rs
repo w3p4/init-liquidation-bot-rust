@@ -7,6 +7,8 @@ use thiserror::Error;
 use tokio::sync::Semaphore;
 use tracing::error;
 
+use std::env;
+
 use alloy::{
     contract::private::{Network, Provider, Transport},
     primitives::{Address, U256},
@@ -56,8 +58,9 @@ pub enum PositionError {
 }
 
 pub async fn get_or_fetch_active_positions() -> Result<Vec<U256>, Box<dyn std::error::Error>> {
+    let redis_url = env::var("REDIS_URL").expect("REDIS_URL must be set");
     // connect to redis
-    let client = redis::Client::open("redis://192.168.1.95/")?;
+    let client = redis::Client::open(redis_url)?;
     let mut conn = client.get_connection()?;
 
     let pos: Option<String> = conn.get(REDIS_KEY).unwrap_or_default();
@@ -137,12 +140,10 @@ pub async fn get_init_pos_infos<
 ) -> Result<Vec<IInitLens::PosInfo>, Box<dyn std::error::Error>> {
     let pos_infos_return = init_lens.getInitPosInfos(pos_ids).call().await;
 
-    let mut pos_infos:Vec<PosInfo>= vec![];
-    
+    let mut pos_infos: Vec<PosInfo> = vec![];
+
     match pos_infos_return {
-        Ok(r) => {
-            pos_infos = r.posInfos
-        }
+        Ok(r) => pos_infos = r.posInfos,
         Err(e) => {
             // log error
             println!("Error: {e}");
@@ -196,41 +197,3 @@ fn filter_low_health(pos_info: &IInitLens::PosInfo) -> bool {
     let is_greater_low_health = pos_info.health_e18 > low_health;
     is_below_one && is_greater_low_health
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
