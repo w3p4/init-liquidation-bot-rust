@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
-# Default target is build
-default: build
+# # Default target is build
+# default: build
 
 # Define variables
 ALLOY_VERSION=0.12.0
@@ -11,37 +11,37 @@ CONTRACTS_PATH=contracts
 BINDINGS_FOLDER=bindings
 BINDINGS_CRATES_FOLDER=$(CRATES_FOLDER)/$(BINDINGS_FOLDER)
 
-# Target for generating bindings
-bindings:
+# Default target (if no target is specified)
+.DEFAULT_GOAL := help
+
+# Help command (lists all available commands)
+help:
+	@echo "Available commands:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+bindings: # Generate new bindings
 	rm -rf $(BINDINGS_CRATES_FOLDER)
-# Generate new bindings
 	@forge bind --alloy-version $(ALLOY_VERSION) --root $(CONTRACTS_PATH) -b $(BINDINGS_CRATES_FOLDER) --force
 
-# Target for building the project
-build: bindings
+build: bindings ## Build the Docker image
 	@$(CARGO) build
 
-# Target for building the project in release mode
-build-release: bindings
+build-release: bindings ## Build the Docker image, release mode
 	@$(CARGO) build --release
 
-# Target for cleaning the project
-clean:
+clean: ## Clean the project
 	@forge clean --root $(CONTRACTS_PATH)
 	@$(CARGO) clean
 
-# Target for formatting the code
-fmt:
+fmt: ## Format the code
 	@forge fmt --check --root $(CONTRACTS_PATH)
 	@$(CARGO) fmt
 
-# Target for running tests
-test:
+test: ## Run tests
 	@forge test --root $(CONTRACTS_PATH)
 	@$(CARGO) test
 
-# Target for installing forge dependencies
-setup:
+setup: ## Install forge dependencies
 	@forge install --root $(CONTRACTS_PATH)
 
 
