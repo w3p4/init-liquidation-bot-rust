@@ -852,6 +852,7 @@ pub mod IInitLens {
     pub static DEPLOYED_BYTECODE: alloy_sol_types::private::Bytes = alloy_sol_types::private::Bytes::from_static(
         b"",
     );
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**```solidity
 struct BorrInfo { address[] pools; uint256[] debtShares; uint256[] debts; }
 ```*/
@@ -1105,6 +1106,7 @@ struct BorrInfo { address[] pools; uint256[] debtShares; uint256[] debts; }
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**```solidity
 struct CollInfo { address[] pools; uint256[] shares; uint256[] amts; address[] wLps; uint256[][] ids; uint256[][] wLpAmts; }
 ```*/
@@ -1463,6 +1465,7 @@ struct CollInfo { address[] pools; uint256[] shares; uint256[] amts; address[] w
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**```solidity
 struct PosInfo { CollInfo collInfo; BorrInfo borrInfo; uint256 collCredit_e36; uint256 borrCredit_e36; uint256 health_e18; uint16 mode; address viewer; address owner; uint256 posId; }
 ```*/
@@ -1849,6 +1852,7 @@ struct PosInfo { CollInfo collInfo; BorrInfo borrInfo; uint256 collCredit_e36; u
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `getHookPosInfo(address,address,uint256)` and selector `0x1ef5a35b`.
 ```solidity
 function getHookPosInfo(address _hook, address _user, uint256 _posId) external returns (PosInfo memory posInfo);
@@ -1863,6 +1867,7 @@ function getHookPosInfo(address _hook, address _user, uint256 _posId) external r
         #[allow(missing_docs)]
         pub _posId: alloy::sol_types::private::primitives::aliases::U256,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`getHookPosInfo(address,address,uint256)`](getHookPosInfoCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -2005,6 +2010,7 @@ function getHookPosInfo(address _hook, address _user, uint256 _posId) external r
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `getHookPosInfos(address,address,uint256[])` and selector `0x4467b7d3`.
 ```solidity
 function getHookPosInfos(address _hook, address _user, uint256[] memory _posIds) external returns (PosInfo[] memory posInfos);
@@ -2021,6 +2027,7 @@ function getHookPosInfos(address _hook, address _user, uint256[] memory _posIds)
             alloy::sol_types::private::primitives::aliases::U256,
         >,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`getHookPosInfos(address,address,uint256[])`](getHookPosInfosCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -2169,6 +2176,7 @@ function getHookPosInfos(address _hook, address _user, uint256[] memory _posIds)
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `getInitPosInfo(uint256)` and selector `0x2f9275ae`.
 ```solidity
 function getInitPosInfo(uint256 _initPosId) external returns (PosInfo memory posInfo);
@@ -2179,6 +2187,7 @@ function getInitPosInfo(uint256 _initPosId) external returns (PosInfo memory pos
         #[allow(missing_docs)]
         pub _initPosId: alloy::sol_types::private::primitives::aliases::U256,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`getInitPosInfo(uint256)`](getInitPosInfoCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -2301,6 +2310,7 @@ function getInitPosInfo(uint256 _initPosId) external returns (PosInfo memory pos
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `getInitPosInfos(uint256[])` and selector `0x8eacd96b`.
 ```solidity
 function getInitPosInfos(uint256[] memory _initPosIds) external returns (PosInfo[] memory posInfos);
@@ -2313,6 +2323,7 @@ function getInitPosInfos(uint256[] memory _initPosIds) external returns (PosInfo
             alloy::sol_types::private::primitives::aliases::U256,
         >,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`getInitPosInfos(uint256[])`](getInitPosInfosCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -2445,6 +2456,7 @@ function getInitPosInfos(uint256[] memory _initPosIds) external returns (PosInfo
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `modeBorrowableAmt(uint16,address)` and selector `0x4761bfb7`.
 ```solidity
 function modeBorrowableAmt(uint16 _mode, address _pool) external returns (uint256 borrowableAmt);
@@ -2457,6 +2469,7 @@ function modeBorrowableAmt(uint16 _mode, address _pool) external returns (uint25
         #[allow(missing_docs)]
         pub _pool: alloy::sol_types::private::Address,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`modeBorrowableAmt(uint16,address)`](modeBorrowableAmtCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -2591,6 +2604,7 @@ function modeBorrowableAmt(uint16 _mode, address _pool) external returns (uint25
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `posBorrowableAmt(address,address,uint256,address)` and selector `0xea5b8ebb`.
 ```solidity
 function posBorrowableAmt(address _hook, address _user, uint256 _posId, address _pool) external returns (uint256 borrowableAmt);
@@ -2607,6 +2621,7 @@ function posBorrowableAmt(address _hook, address _user, uint256 _posId, address 
         #[allow(missing_docs)]
         pub _pool: alloy::sol_types::private::Address,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`posBorrowableAmt(address,address,uint256,address)`](posBorrowableAmtCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -2758,6 +2773,7 @@ function posBorrowableAmt(address _hook, address _user, uint256 _posId, address 
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `viewerPosInfoAt(address,uint256)` and selector `0xe5cdd193`.
 ```solidity
 function viewerPosInfoAt(address _viewer, uint256 _index) external returns (PosInfo memory posInfo);
@@ -2770,6 +2786,7 @@ function viewerPosInfoAt(address _viewer, uint256 _index) external returns (PosI
         #[allow(missing_docs)]
         pub _index: alloy::sol_types::private::primitives::aliases::U256,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`viewerPosInfoAt(address,uint256)`](viewerPosInfoAtCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -2905,6 +2922,7 @@ function viewerPosInfoAt(address _viewer, uint256 _index) external returns (PosI
             }
         }
     };
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `viewerPosInfos(address,uint256[])` and selector `0x37ffaf40`.
 ```solidity
 function viewerPosInfos(address _viewer, uint256[] memory _indices) external returns (PosInfo[] memory posInfos);
@@ -2919,6 +2937,7 @@ function viewerPosInfos(address _viewer, uint256[] memory _indices) external ret
             alloy::sol_types::private::primitives::aliases::U256,
         >,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`viewerPosInfos(address,uint256[])`](viewerPosInfosCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -3061,6 +3080,7 @@ function viewerPosInfos(address _viewer, uint256[] memory _indices) external ret
         }
     };
     ///Container for all the [`IInitLens`](self) function calls.
+    #[derive()]
     pub enum IInitLensCalls {
         #[allow(missing_docs)]
         getHookPosInfo(getHookPosInfoCall),

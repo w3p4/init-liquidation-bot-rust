@@ -66,6 +66,7 @@ pub mod ICallbackReceiver {
     pub static DEPLOYED_BYTECODE: alloy_sol_types::private::Bytes = alloy_sol_types::private::Bytes::from_static(
         b"",
     );
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     /**Function with signature `coreCallback(address,bytes)` and selector `0x8a839fde`.
 ```solidity
 function coreCallback(address _sender, bytes memory _data) external payable returns (bytes memory result);
@@ -78,6 +79,7 @@ function coreCallback(address _sender, bytes memory _data) external payable retu
         #[allow(missing_docs)]
         pub _data: alloy::sol_types::private::Bytes,
     }
+    #[derive(Default, Debug, PartialEq, Eq, Hash)]
     ///Container type for the return parameters of the [`coreCallback(address,bytes)`](coreCallbackCall) function.
     #[allow(non_camel_case_types, non_snake_case, clippy::pub_underscore_fields)]
     #[derive(Clone)]
@@ -210,6 +212,7 @@ function coreCallback(address _sender, bytes memory _data) external payable retu
         }
     };
     ///Container for all the [`ICallbackReceiver`](self) function calls.
+    #[derive()]
     pub enum ICallbackReceiverCalls {
         #[allow(missing_docs)]
         coreCallback(coreCallbackCall),
